@@ -34,33 +34,25 @@ At the moment, the module is not available for installation via the composer.
 
 The module is not configured.
 
-## Specifications
+## Controllers
+All controllers are located in the menu `Admin > System > QA Assistant`
 
-#### Controllers
-##### Commands
-`Admin > System > QA Assistant > Commands`
-
+#### Commands
 Executes commands, displays the execution output, and allows you to view the execution output of the last 10 commands.
 
 <img width="800" alt="QA-Assistant-Commands-Magento-Admin" src="https://github.com/user-attachments/assets/2c9df2ba-df29-43d3-a37f-41133f3e834f" />
 
-##### Cron
-`Admin > System > QA Assistant > Cron`
-
+#### Cron
 Executes the cron of the task and displays the command output, also view the log of the last 10 tasks.
 
 <img width="800" alt="QA-Assistant-Cron-Magento-Admin" src="https://github.com/user-attachments/assets/745eb19c-abe0-4655-94df-bda9369e8912" />
 
-##### Cron Schedule
-`Admin > System > QA Assistant > Cron Schedule`
-
+#### Cron Schedule
 Displays all scheduled cron tasks, and their execution time.
 
 <img width="800" alt="QA-Assistant-Cron-Schedule-Magento-Admin" src="https://github.com/user-attachments/assets/c6ecf9b2-7404-4af8-9d48-53e7cfef6aac" />
 
-##### Logs
-`Admin > System > QA Assistant > Logs`
-
+#### Logs
 Displays log files in the 'var/log' directory and allows you to download or delete them.
 
 <img width="800" alt="QA-Assistant-Logs-Magento-Admin" src="https://github.com/user-attachments/assets/67610f54-ce5f-4632-a884-f0f4fc3df6a2" />
@@ -69,7 +61,7 @@ The ability to view the contents of logs has also been added.
 
 <img width="800" alt="QA-Assistant-Log-View-cron-log-Magento-Admin" src="https://github.com/user-attachments/assets/0dfe3160-fc0d-47b1-9fee-ac9914513e95" />
 
-#### Console commands
+## Console commands
 ```
 bin/magento cron:job:run <job>
 ```
