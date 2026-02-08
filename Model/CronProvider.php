@@ -54,7 +54,7 @@ class CronProvider
             $jobs = $this->cronConfig->getJobs();
             foreach ($jobs as $jobGroup => $groupJobs) {
                 foreach ($groupJobs as $job) {
-                    if ($this->isAllowed($job['name'])) {
+                    if (isset($job['instance']) && $this->isAllowed($job['name'])) {
                         $job['group'] = $jobGroup;
                         $this->jobs[$job['name']] = $job;
                     }
@@ -63,6 +63,23 @@ class CronProvider
         }
 
         return $this->jobs;
+    }
+
+    /**
+     * @param string $cronJobName
+     * @return bool
+     */
+    private function isAllowed($cronJobName)
+    {
+        if (strpos($cronJobName, '_') === 0) {
+            return false;
+        }
+        foreach ($this->excludes as $exclude) {
+            if (strpos($cronJobName, $exclude) === 0) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -143,24 +160,6 @@ class CronProvider
         $schedule->setStatus($status)->setFinishedAt(date('Y-m-d H:i:s', $this->getCronTimestamp()));
         $schedule->setMessages($message);
         return $schedule->save();
-    }
-
-
-    /**
-     * @param string $cronJobName
-     * @return bool
-     */
-    private function isAllowed($cronJobName)
-    {
-        if (strpos($cronJobName, '_') === 0) {
-            return false;
-        }
-        foreach ($this->excludes as $exclude) {
-            if (strpos($cronJobName, $exclude) === 0) {
-                return false;
-            }
-        }
-        return true;
     }
 
 }

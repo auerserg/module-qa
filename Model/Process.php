@@ -110,14 +110,31 @@ class Process extends AbstractModel implements ProcessInterface
         return $logDir . "command_{$this->getProcessId()}.log";
     }
 
+    public function getPidLog() {
+        $logDir = BP . '/var/log/qa/';
+        if (!is_dir($logDir)) {
+            mkdir($logDir, 0775, true);
+        }
+
+        return $logDir . "command_{$this->getProcessId()}.pid";
+    }
+
     public function getCmd(): string
     {
         $logFile = $this->getLog();
+        $command = $this->getCommand();
+        $pidFile = $this->getPidLog();
+        $prompt = sprintf("root@host:~$ %s", $command);
 
-        $cmd = sprintf('cd %s && nohup %s > %s 2>&1 & echo $!',
+        $cmd = sprintf(
+            'cd %s && (echo "%s" >> %s; nohup %s >> %s 2>&1 & echo $! > %s)',
             BP,
-            $this->getCommand(),
-            escapeshellarg($logFile));
+            addslashes($prompt),
+            escapeshellarg($logFile),
+            $command,
+            escapeshellarg($logFile),
+            escapeshellarg($pidFile)
+        );
 
         return $cmd;
     }

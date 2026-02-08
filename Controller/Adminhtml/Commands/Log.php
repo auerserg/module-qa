@@ -41,7 +41,7 @@ class Log implements HttpGetActionInterface
             $id = $this->request->getParam('id');
             $entity = $this->commandProvider->getProcess($id);
             $pid = (int)$entity->getPid();
-            $isRunning = false;
+            $isRunning = true;
             if ($pid > 0) {
                 $isRunning = posix_kill($pid, 0);
                 $this->commandProvider->updateStatusProcess($entity, $isRunning);
@@ -54,6 +54,8 @@ class Log implements HttpGetActionInterface
             $logData = '';
             if (file_exists($entity->getLog())) {
                 $logData = file_get_contents($entity->getLog());
+            } else {
+                throw new LocalizedException(__('Log file not found'));
             }
             return $this->jsonResponse([
                 'log'       => trim($logData),

@@ -85,7 +85,7 @@ use Superb\QA\Controller\Adminhtml\Commands\Log;
 </style>
 
 <div class="page-main-actions">
-    <form method="post" data-mage-init='{"QACronJobs":{"runUrl":"<?= $block->getUrl(Run::URL); ?>", "logUrl":"<?= $block->getUrl(Log::URL); ?>"}}'>
+    <form method="post" data-mage-init='{"QACommand":{"runUrl":"<?= $block->getUrl(Run::URL); ?>", "logUrl":"<?= $block->getUrl(Log::URL); ?>"}}'>
         <div class="admin__field">
             <div class="admin__field-label">
                 <label for="cron">Cron:</label>

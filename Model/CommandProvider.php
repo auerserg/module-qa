@@ -115,7 +115,7 @@ class CommandProvider
             throw new LocalizedException(__('Command "%1" is not defined.', $args));
         }
         $entity = $this->processRepository->createNew($command);
-        $pid = exec($entity->getCmd());
+        $pid = $this->runInBackground($entity);
         $entity->setPid($pid);
         $entity->setStatus('running');
         $this->processRepository->save($entity);
@@ -132,7 +132,7 @@ class CommandProvider
     {
         $command = trim($command);
         $entity = $this->processRepository->createNew($command);
-        $pid = exec($entity->getCmd());
+        $pid = $this->runInBackground($entity);
         $entity->setPid($pid);
         $entity->setStatus('running');
         $this->processRepository->save($entity);
@@ -167,10 +167,7 @@ class CommandProvider
     {
         $entity = $this->processRepository->get($id);
         $entity = $this->processRepository->createNew($entity->getCommand());
-        file_put_contents(BP . '/var/log/_CommandProvider.log',
-            "\r\n[" . date('c') . "] 144: " . var_export($entity->getCmd(), true),
-            FILE_APPEND); // @todo remove debug
-        $pid = exec($entity->getCmd());
+        $pid = $this->runInBackground($entity);
         $entity->setPid($pid);
         $entity->setStatus('running');
         $this->processRepository->save($entity);
@@ -191,4 +188,19 @@ class CommandProvider
         $this->processRepository->save($entity);
     }
 
+    /**
+     * @param Process $entity
+     * @return int
+     */
+    public function runInBackground(Process $entity)
+    {
+        $command = $entity->getCmd();
+        exec($command);
+        $pid = (int)file_get_contents($entity->getPidLog());
+        if ($pid > 0) {
+            unlink($entity->getPidLog());
+        }
+
+        return $pid;
+    }
 }

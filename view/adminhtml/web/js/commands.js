@@ -23,15 +23,24 @@ define([
         },
         selectCommand: function () {
             const $select = this.element.find(this.options.command),
-                value = $select.val(),
-                $opt = $select.find('option[value="' + value + '"]'),
+                $opt = $select.find('option:selected'),
                 id = $opt.data('id');
             this.element.find('[name="command_id"]').val(id);
+            this.log_id = id;
             if (id) {
                 this.logger(id);
             } else {
+                this.reset();
                 $(this.options.messages).html('');
                 $(this.options.response).text('');
+            }
+        },
+        reset:         function () {
+            if (this.xhr) {
+                this.xhr.abort();
+            }
+            if (this.timeout) {
+                clearTimeout(this.timeout);
             }
         },
         message:       function (msg, type = 'success') {
@@ -45,7 +54,9 @@ define([
         submit:        function (e) {
             e.preventDefault();
             const self = this;
-            $.ajax({
+            this.log_id = undefined;
+            this.reset();
+            this.xhr = $.ajax({
                 url:        this.options.runUrl,
                 type:       'POST',
                 dataType:   'json',
@@ -56,6 +67,7 @@ define([
                         self.message(res.message, res.status)
                     }
                     if (res.status === 'info') {
+                        self.log_id = res.processId;
                         self.logger(res.processId);
                     }
                 },
@@ -66,7 +78,10 @@ define([
         },
         logger:        function (id) {
             const self = this;
-            $.ajax({
+            if (this.log_id !== id) {
+                return;
+            }
+            this.xhr = $.ajax({
                 url:      this.options.logUrl,
                 type:     'GET',
                 dataType: 'json',
@@ -79,14 +94,15 @@ define([
                         self.message(res.message, res.status)
                     }
                     if (res.status === 'success') {
-                        if ($(self.options.response).text().trim() != res.log) {
-                            $(self.options.response).text(res.log);
+                        const $response = $(self.options.response);
+                        if (parseInt($response.attr('data-length')) !== res.log.length) {
+                            $response.attr('data-length', res.log.length).text(res.log);
                             if (Prism) {
                                 Prism.highlightAll();
                             }
                         }
                         if (res.isRunning) {
-                            setTimeout(() => self.logger(id), self.options.refresh);
+                            this.timeout = setTimeout(() => self.logger(id), self.options.refresh);
                         }
                     }
                 },
