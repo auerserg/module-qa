@@ -19,6 +19,7 @@ use Superb\QA\Model\CronProvider;
 
 class Run implements HttpPostActionInterface
 {
+    public const URL = 'qa_assistant/cron/run/';
     public function __construct(
         private readonly LoggerInterface $logger,
         private readonly CronProvider $cronProvider,

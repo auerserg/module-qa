@@ -19,6 +19,7 @@ use Superb\QA\Model\CommandProvider;
 
 class Log implements HttpGetActionInterface
 {
+    public const URL = 'qa_assistant/commands/log/';
 
     public function __construct(
         private readonly LoggerInterface $logger,

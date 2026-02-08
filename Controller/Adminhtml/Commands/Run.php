@@ -19,6 +19,7 @@ use Superb\QA\Model\CommandProvider;
 
 class Run implements HttpPostActionInterface
 {
+    public const URL = 'qa_assistant/commands/run/';
 
     public function __construct(
         private readonly LoggerInterface $logger,

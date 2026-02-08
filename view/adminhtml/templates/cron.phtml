@@ -6,6 +6,8 @@
 /** @var \Superb\QA\Block\Adminhtml\Cron $block */
 
 use Superb\QA\Block\Adminhtml\Cron;
+use Superb\QA\Controller\Adminhtml\Cron\Run;
+use Superb\QA\Controller\Adminhtml\Commands\Log;
 
 ?>
 <style>
@@ -83,7 +85,7 @@ use Superb\QA\Block\Adminhtml\Cron;
 </style>
 
 <div class="page-main-actions">
-    <form method="post" data-mage-init='{"QACronJobs":{}}'>
+    <form method="post" data-mage-init='{"QACronJobs":{"runUrl":"<?= $block->getUrl(Run::URL); ?>", "logUrl":"<?= $block->getUrl(Log::URL); ?>"}}'>
         <div class="admin__field">
             <div class="admin__field-label">
                 <label for="cron">Cron:</label>

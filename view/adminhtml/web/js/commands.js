@@ -12,7 +12,9 @@ define([
             messages: '.admin__field-messages .messages',
             command:  'select[name]',
             response: '.response-block pre code',
-            refresh:  2000
+            refresh:  2000,
+            runUrl:   urlBuilder.build('commands/run'),
+            logUrl:   urlBuilder.build('commands/log'),
         },
         _create:       function () {
             this.element.on('submit', $.proxy(this.submit, this));
@@ -44,7 +46,7 @@ define([
             e.preventDefault();
             const self = this;
             $.ajax({
-                url:        urlBuilder.build('commands/run'),
+                url:        this.options.runUrl,
                 type:       'POST',
                 dataType:   'json',
                 data:       this.element.serialize(),
@@ -65,7 +67,7 @@ define([
         logger:        function (id) {
             const self = this;
             $.ajax({
-                url:      urlBuilder.build('commands/log'),
+                url:      this.options.logUrl,
                 type:     'GET',
                 dataType: 'json',
                 data:     {

@@ -7,6 +7,8 @@
 /** @var \Superb\QA\Block\Adminhtml\Commands $block */
 
 use Superb\QA\Block\Adminhtml\Commands;
+use Superb\QA\Controller\Adminhtml\Commands\Run;
+use Superb\QA\Controller\Adminhtml\Commands\Log;
 
 ?>
 <style>
@@ -85,7 +87,8 @@ use Superb\QA\Block\Adminhtml\Commands;
 </style>
 
 <div class="page-main-actions">
-    <form method="post" data-mage-init='{"QACommand":{}}'>
+    <form method="post"
+          data-mage-init='{"QACommand":{"runUrl":"<?= $block->getUrl(Run::URL); ?>", "logUrl":"<?= $block->getUrl(Log::URL); ?>"}}'>
         <div class="admin__field">
             <div class="admin__field-label">
                 <label for="command">Command:</label>
