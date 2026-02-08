@@ -1,0 +1,95 @@
+<?php
+/**
+ * Copyright © Auer All rights reserved.
+ * See COPYING.txt for license details.
+ */
+/** @var \Superb\QA\Block\Adminhtml\LogsView $block */
+
+use Superb\QA\Block\Adminhtml\LogsView;
+
+?>
+<div class="page-main-actions">
+    <div class="page-actions-placeholder"></div>
+    <div class="page-actions" data-ui-id="page-actions-toolbar-content-header">
+        <div class="page-actions-inner">
+            <div class="page-actions-buttons">
+                <?php foreach ($block->getActions() as $key => $action):
+                    $hookId = 'buttonId' . uniqid();
+                    ?>
+                    <button id="<?= $block->escapeHtmlAttr($key) ?>"
+                            backend-button-widget-hook-id="<?= $hookId ?>"
+                            title="<?= $block->escapeHtmlAttr($action['label']) ?>"
+                            type="button"
+                            class="action-default scalable <?= $block->escapeHtmlAttr($key) ?>"
+                            onclick="setLocation('<?= $action['href']; ?>')"
+                    >
+                        <span><?= $block->escapeHtml($action['label']) ?></span>
+                    </button>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </div>
+</div>
+<?php
+$content = $block->getContent();
+?>
+<div class="log-viewer-container">
+    <pre class="line-numbers"><code class="language-log" data-length="<?= $block->escapeHtmlAttr(strlen($content))?>"><?= $block->escapeHtml($content) ?></code></pre>
+</div>
+
+<style>
+    .qa_assistant-logs-view .page-wrapper {
+        height: 100vh !important;
+    }
+
+    .log-viewer-container pre {
+        flex: 1;
+        width: 100%;
+        height: 100vh
+        min-height: 300px;
+        max-height: 500px;
+        font-family: "Courier New", Consolas, monospace;
+        font-size: 14px;
+        line-height: 1.4;
+        box-sizing: border-box;
+        padding: 10px 12px;
+        border: 1px solid #333;
+        border-radius: 6px;
+        overflow-y: scroll;
+        overflow-x: auto;
+        white-space: pre;
+    }
+
+    footer.page-footer {
+        display: none;
+    }
+</style>
+<script type="text/javascript">
+    require([
+        "jquery"
+    ], function ($) {
+        function debounce(callback, delay) {
+            let timer;
+            return function () {
+                clearTimeout(timer);
+                timer = setTimeout(() => {
+                    callback();
+                }, delay)
+            }
+        }
+
+        function resizeLogViewer() {
+            let logViewer = $('.log-viewer-container pre');
+            const windowHeight = window.innerHeight;
+            const top = logViewer[0].getBoundingClientRect().top;
+            const bottomPadding = 40;
+            const newHeight = windowHeight - top - bottomPadding;
+            logViewer.css('max-height', newHeight + 'px');
+        }
+
+        debounce(resizeLogViewer, 100);
+        window.addEventListener('resize', debounce(resizeLogViewer, 100));
+        setTimeout(debounce(resizeLogViewer, 100), 300);
+    });
+</script>
+

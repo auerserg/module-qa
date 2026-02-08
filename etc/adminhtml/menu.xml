@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Copyright © Auer, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="Superb::top_level" title="QA Assistant" module="Superb_QA" sortOrder="9999"
+             resource="Superb_QA::qa_assistant" parent="Magento_Backend::system"/>
+        <add id="Superb_QA::commands_index" title="Commands" module="Superb_QA" sortOrder="100"
+             resource="Superb_QA::commands_index" parent="Superb::top_level" action="qa_assistant/commands/index"/>
+        <add id="Superb_QA::cron_index" title="Cron" module="Superb_QA" sortOrder="200"
+             resource="Superb_QA::cron_index" parent="Superb::top_level" action="qa_assistant/cron/index"/>
+        <add id="Superb_QA::cron_schedule" title="Cron Schedule" module="Superb_QA" sortOrder="300"
+             resource="Superb_QA::cron_schedule" parent="Superb::top_level" action="qa_assistant/cron/schedule"/>
+        <add id="Superb_QA::logs_index" title="Logs" module="Superb_QA" sortOrder="400"
+             resource="Superb_QA::logs_index" parent="Superb::top_level" action="qa_assistant/logs/index"/>
+    </menu>
+</config>

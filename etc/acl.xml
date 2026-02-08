@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Copyright © Auer, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Acl/etc/acl.xsd">
+    <acl>
+        <resources>
+            <resource id="Magento_Backend::admin">
+                <resource id="Superb_QA::qa_assistant" title="QA Assistant" sortOrder="9999">
+                    <resource id="Superb_QA::commands_index" title="Commands" sortOrder="100"/>
+                    <resource id="Superb_QA::cron_index" title="Cron" sortOrder="200"/>
+                    <resource id="Superb_QA::cron_schedule" title="Cron Schedule" sortOrder="300">
+                        <resource id="Superb_QA::cron_delete" title="Delete" sortOrder="100"/>
+                    </resource>
+                    <resource id="Superb_QA::logs_index" title="Logs" sortOrder="400">
+                        <resource id="Superb_QA::logs_view" title="View" sortOrder="100"/>
+                    </resource>
+                </resource>
+            </resource>
+        </resources>
+    </acl>
+</config>

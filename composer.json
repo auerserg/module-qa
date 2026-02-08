@@ -1,0 +1,28 @@
+{
+    "name": "auerserg/module-qa",
+    "description": "-",
+    "type": "magento2-module",
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "Auer Serg",
+            "email": "auerserg@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "ext-posix": "*",
+        "magento/module-ui": "*",
+        "magento/module-import-export": "*",
+        "magento/module-backend": "*",
+        "magento/module-cron": "*"
+    },
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Superb\\QA\\": ""
+        }
+    }
+}

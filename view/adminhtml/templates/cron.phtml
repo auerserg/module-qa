@@ -1,0 +1,128 @@
+<?php
+/**
+ * Copyright © Auer All rights reserved.
+ * See COPYING.txt for license details.
+ */
+/** @var \Superb\QA\Block\Adminhtml\Cron $block */
+
+use Superb\QA\Block\Adminhtml\Cron;
+
+?>
+<style>
+    .page-main-actions {
+        display: flex;
+        flex-flow: column nowrap;
+    }
+
+    .page-main-actions .admin__field {
+        margin: 5px;
+        flex: 0 1 auto;
+        display: flex;
+    }
+
+    .page-main-actions .admin__action {
+        margin: 5px;
+        flex: 0 1 auto;
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .admin__action .admin__field-control, .admin__action .admin__field-messages {
+        margin: 5px;
+        padding: 5px;
+        flex: 0 1 auto;
+    }
+
+    .admin__action .admin__field-messages {
+        flex: 1 1 auto;
+    }
+
+    .admin__field .admin__field-label, .admin__field .admin__field-control {
+        margin: 5px;
+        padding: 5px;
+        flex: 1 1 auto;
+    }
+
+    .admin__field .admin__field-label {
+        flex: 0 1 100px;
+    }
+
+    .admin__field .admin__control-select {
+        width: 100%;
+    }
+
+    .admin__action .messages {
+        height: 55px;
+    }
+
+    .admin__action .message {
+        margin: 0 !important;
+    }
+
+    .admin__action button {
+        height: 55px;
+    }
+
+    .response-block pre {
+        width: 100%;
+        min-height: 300px;
+        font-family: "Courier New", Consolas, monospace;
+        font-size: 14px;
+        line-height: 1.4;
+        padding: 10px 12px;
+        border-radius: 4px;
+        resize: vertical;
+        overflow-y: hidden;
+        overflow-x: auto;
+        white-space: pre;
+    }
+    footer.page-footer {
+        display: none;
+    }
+
+</style>
+
+<div class="page-main-actions">
+    <form method="post" data-mage-init='{"QACronJobs":{}}'>
+        <div class="admin__field">
+            <div class="admin__field-label">
+                <label for="cron">Cron:</label>
+            </div>
+            <div class="admin__field-control">
+                <select name="cron" id="cron" class="admin__control-select">
+                    <optgroup label="Previous used">
+                        <?php foreach ($block->getPrevious() as $id => $command): ?>
+                            <option
+                                value="<?= $block->escapeHtmlAttr($command); ?>"
+                                data-id="<?= $block->escapeHtmlAttr($id); ?>"><?= $block->escapeHtml($command); ?></option>
+                        <?php endforeach; ?>
+                    </optgroup>
+                    <optgroup label="Cron Jobs">
+                        <?php foreach ($block->getCronJobs() as $name => $description): ?>
+                            <option
+                                value="<?= $block->escapeHtmlAttr($name); ?>"><?= $block->escapeHtml($description); ?></option>
+                        <?php endforeach; ?>
+                    </optgroup>
+                </select>
+                <input type="hidden" name="command_id">
+            </div>
+        </div>
+        <div class="admin__action">
+            <div class="admin__field-messages">
+                <div id="messages">
+                    <div class="messages">
+                    </div>
+                </div>
+            </div>
+            <div class="admin__field-control">
+                <button id="run" title="<?= $block->escapeHtmlAttr(__('Run Cron')) ?>" type="submit"
+                        class="action-default scalable save primary ui-button ui-corner-all ui-widget">
+                    <span><?= $block->escapeHtml(__('Run')) ?></span>
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="response-block">
+    <pre class="line-numbers"><code class="language-bash"></code></pre>
+</div>

@@ -1,0 +1,100 @@
+<?php
+/**
+ * Copyright © Auer All rights reserved.
+ * See COPYING.txt for license details.
+ */
+declare(strict_types=1);
+
+namespace Superb\QA\Ui\DataProvider;
+
+use DateTime;
+use Magento\Framework\Api\Filter;
+use Magento\Framework\Api\FilterBuilder;
+use Magento\Framework\Api\Search\SearchCriteriaBuilder;
+use Magento\Framework\App\RequestInterface;
+use Magento\Framework\View\Element\UiComponent\DataProvider\DataProvider;
+use Magento\Framework\View\Element\UiComponent\DataProvider\Reporting;
+
+class CronDataProvider extends DataProvider
+{
+
+    /**
+     * @param string                $name
+     * @param string                $primaryFieldName
+     * @param string                $requestFieldName
+     * @param Reporting             $reporting
+     * @param SearchCriteriaBuilder $searchCriteriaBuilder
+     * @param RequestInterface      $request
+     * @param FilterBuilder         $filterBuilder
+     * @param array                 $meta
+     * @param array                 $data
+     * @param array                 $additionalFilterPool
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
+     */
+    public function __construct(
+        $name,
+        $primaryFieldName,
+        $requestFieldName,
+        Reporting $reporting,
+        SearchCriteriaBuilder $searchCriteriaBuilder,
+        RequestInterface $request,
+        FilterBuilder $filterBuilder,
+        array $meta = [],
+        array $data = [],
+        private array $additionalFilterPool = []
+    )
+    {
+        parent::__construct($name,
+            $primaryFieldName,
+            $requestFieldName,
+            $reporting,
+            $searchCriteriaBuilder,
+            $request,
+            $filterBuilder,
+            $meta,
+            $data);
+
+        $this->meta = array_replace_recursive($meta, $this->prepareMetadata());
+    }
+
+    /**
+     * @return array
+     */
+    public function prepareMetadata()
+    {
+        $metadata = [];
+
+        return $metadata;
+    }
+
+    /**
+     * @param Filter $filter
+     * @return void
+     * @throws \Exception
+     */
+    public function addFilter(Filter $filter)
+    {
+        if (!empty($this->additionalFilterPool[$filter->getField()])) {
+            $this->additionalFilterPool[$filter->getField()]->addFilter($this->searchCriteriaBuilder, $filter);
+        } elseif (in_array($filter->getField(), ['created_at', 'scheduled_at', 'executed_at', 'finished_at'])) {
+            $filters = $this->request->getParam('filters')[$filter->getField()];
+
+            if ($filter->getConditionType() == 'gteq' && array_key_exists('from', $filters)) {
+                $fromDate = $filters['from'];
+                $fromDateFormatted = (new DateTime($fromDate))->format('Y-m-d H:i:s');
+                $filter->setValue($fromDateFormatted);
+                $this->searchCriteriaBuilder->addFilter($filter);
+            }
+
+            if ($filter->getConditionType() == 'lteq' && array_key_exists('to', $filters)) {
+                $toDate = $filters['to'];
+                $toDateFormatted = (new DateTime($toDate))->format('Y-m-d H:i:s');
+                $filter->setValue($toDateFormatted);
+                $this->searchCriteriaBuilder->addFilter($filter);
+            }
+        } else {
+            parent::addFilter($filter);
+        }
+    }
+}
+

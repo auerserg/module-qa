@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Copyright © Auer, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<listing
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <argument name="data" xsi:type="array">
+        <item name="js_config" xsi:type="array">
+            <item name="provider" xsi:type="string">log_grid.log_grid_data_source</item>
+        </item>
+    </argument>
+    <settings>
+        <deps>
+            <dep>log_grid.log_grid_data_source</dep>
+        </deps>
+        <spinner>log_grid_columns</spinner>
+    </settings>
+    <dataSource name="log_grid_data_source" component="Magento_Ui/js/grid/provider">
+        <settings>
+            <storageConfig>
+                <param name="indexField" xsi:type="string">file_name</param>
+            </storageConfig>
+            <updateUrl path="mui/index/render"/>
+        </settings>
+        <aclResource>Superb_QA::logs_index</aclResource>
+        <dataProvider class="Superb\QA\Ui\DataProvider\LogFileDataProvider" name="log_grid_data_source">
+            <settings>
+                <requestFieldName>file_name</requestFieldName>
+                <primaryFieldName>file_name</primaryFieldName>
+            </settings>
+        </dataProvider>
+    </dataSource>
+    <listingToolbar name="listing_top">
+        <paging name="listing_paging"/>
+    </listingToolbar>
+    <columns name="log_grid_columns">
+        <column name="file_display_name" class="Superb\QA\Ui\Component\Columns\FileDisplayName">
+            <settings>
+                <sortable>false</sortable>
+                <label translate="true">File name</label>
+                <bodyTmpl>ui/grid/cells/html</bodyTmpl>
+            </settings>
+        </column>
+        <actionsColumn name="actions" class="Superb\QA\Ui\Component\Columns\GridActions">
+            <settings>
+                <indexField>file_name</indexField>
+            </settings>
+        </actionsColumn>
+    </columns>
+</listing>

@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Copyright © Auer, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <argument name="data" xsi:type="array">
+        <item name="js_config" xsi:type="array">
+            <item name="provider" xsi:type="string">cron_schedule_log.cron_schedule_log_data_source</item>
+        </item>
+    </argument>
+    <settings>
+        <spinner>schedule_log_columns</spinner>
+        <deps>
+            <dep>cron_schedule_log.cron_schedule_log_data_source</dep>
+        </deps>
+    </settings>
+    <dataSource name="cron_schedule_log_data_source" component="Magento_Ui/js/grid/provider">
+        <settings>
+            <storageConfig>
+                <param name="indexField" xsi:type="string">schedule_id</param>
+            </storageConfig>
+            <updateUrl path="mui/index/render"/>
+        </settings>
+        <aclResource>Superb_QA::cron_schedule</aclResource>
+        <dataProvider class="Superb\QA\Ui\DataProvider\CronDataProvider"
+                      name="cron_schedule_log_data_source">
+            <settings>
+                <requestFieldName>id</requestFieldName>
+                <primaryFieldName>schedule_id</primaryFieldName>
+            </settings>
+        </dataProvider>
+    </dataSource>
+    <listingToolbar name="listing_top">
+        <settings>
+            <sticky>true</sticky>
+        </settings>
+        <bookmark name="bookmarks"/>
+        <columnsControls name="columns_controls"/>
+        <filters name="listing_filters">
+            <settings>
+                <templates>
+                    <filters>
+                        <select>
+                            <param name="template" xsi:type="string">ui/grid/filters/elements/ui-select</param>
+                            <param name="component" xsi:type="string">Magento_Ui/js/form/element/ui-select</param>
+                        </select>
+                    </filters>
+                </templates>
+            </settings>
+            <filterSelect name="command_type">
+                <settings>
+                    <dataScope>command_type</dataScope>
+                    <label translate="true">Command Type</label>
+                    <options>
+                        <option name="all" xsi:type="array">
+                            <item name="value" xsi:type="string">all</item>
+                            <item name="label" xsi:type="string">All Commands</item>
+                        </option>
+                        <option name="cron" xsi:type="array">
+                            <item name="value" xsi:type="string">cron</item>
+                            <item name="label" xsi:type="string">Cron Job Runs Only</item>
+                        </option>
+                        <option name="other" xsi:type="array">
+                            <item name="value" xsi:type="string">other</item>
+                            <item name="label" xsi:type="string">Exclude Cron Job Runs</item>
+                        </option>
+                    </options>
+                </settings>
+            </filterSelect>
+        </filters>
+        <paging name="listing_paging"/>
+    </listingToolbar>
+    <columns name="schedule_log_columns">
+        <column name="schedule_id">
+            <settings>
+                <filter>textRange</filter>
+                <sorting>desc</sorting>
+                <label>ID</label>
+            </settings>
+        </column>
+        <column name="job_code">
+            <settings>
+                <filter>text</filter>
+                <label>Job Code</label>
+            </settings>
+        </column>
+        <column name="status">
+            <argument name="data" xsi:type="array">
+                <item name="options" xsi:type="object">Superb\QA\Model\Config\Source\CronStatus</item>
+                <item name="config" xsi:type="array">
+                    <item name="filter" xsi:type="string">select</item>
+                    <item name="bodyTmpl" xsi:type="string">ui/grid/cells/html</item>
+                    <item name="dataType" xsi:type="string">select</item>
+                    <item name="label" xsi:type="string">Status</item>
+                </item>
+            </argument>
+        </column>
+        <column name="messages">
+            <settings>
+                <filter>text</filter>
+                <label>Message</label>
+            </settings>
+        </column>
+        <column name="created_at" component="Magento_Ui/js/grid/columns/date">
+            <settings>
+                <filter>datetimeRange</filter>
+                <dataType>date</dataType>
+                <label>Created At</label>
+            </settings>
+        </column>
+        <column name="scheduled_at" component="Magento_Ui/js/grid/columns/date">
+            <settings>
+                <filter>datetimeRange</filter>
+                <dataType>date</dataType>
+                <label>Scheduled At</label>
+            </settings>
+        </column>
+        <column name="executed_at" component="Magento_Ui/js/grid/columns/date">
+            <settings>
+                <filter>datetimeRange</filter>
+                <dataType>date</dataType>
+                <label>Executed At</label>
+            </settings>
+        </column>
+        <column name="finished_at" component="Magento_Ui/js/grid/columns/date">
+            <settings>
+                <filter>datetimeRange</filter>
+                <dataType>date</dataType>
+                <label>Finished At</label>
+            </settings>
+        </column>
+        <column name="execution_time">
+            <settings>
+                <filter>false</filter>
+                <label>Execution Time</label>
+            </settings>
+        </column>
+    </columns>
+</listing>
