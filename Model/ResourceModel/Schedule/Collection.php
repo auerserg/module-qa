@@ -11,13 +11,11 @@ use Magento\Cron\Model\ResourceModel\Schedule\Collection as ScheduleCollection;
 use Magento\Framework\Api\Search\AggregationInterface;
 use Magento\Framework\Api\Search\SearchResultInterface;
 use Magento\Framework\Api\SearchCriteriaInterface;
-use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Data\Collection\Db\FetchStrategyInterface;
 use Magento\Framework\Data\Collection\EntityFactoryInterface;
 use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\Event\ManagerInterface;
 use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
-use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
 use Magento\Framework\View\Element\UiComponent\DataProvider\Document;
 use Psr\Log\LoggerInterface;
 
@@ -31,11 +29,10 @@ class Collection extends ScheduleCollection implements SearchResultInterface
      * @var AggregationInterface
      */
     protected $aggregations;
-    /**
-     * @var TimezoneInterface
-     */
-    private $timeZone;
 
+    /**
+     * @noinspection PhpUnusedParameterInspection
+     */
     public function __construct(
         EntityFactoryInterface $entityFactory,
         LoggerInterface $logger,
@@ -47,20 +44,18 @@ class Collection extends ScheduleCollection implements SearchResultInterface
         private $resourceModel,
         private $model = Document::class,
         ?AdapterInterface $connection = null,
-        ?AbstractDb $resource = null,
-        ?TimezoneInterface $timeZone = null
+        ?AbstractDb $resource = null
     )
     {
         parent::__construct($entityFactory, $logger, $fetchStrategy, $eventManager, $connection, $resource);
         $this->_init($this->model, $this->resourceModel);
         $this->_eventPrefix = $eventPrefix;
         $this->setMainTable($mainTable);
-        $this->timeZone = $timeZone
-            ? : ObjectManager::getInstance()->get(TimezoneInterface::class);
     }
 
     /**
      * @return void
+     * @noinspection PhpUndefinedMethodInspection
      */
     public function _resetState(): void
     {

@@ -4,16 +4,20 @@
  * See COPYING.txt for license details.
  */
 
+use Magento\Framework\Escaper;
 use Superb\QA\Block\Adminhtml\Commands;
-use Superb\QA\Controller\Adminhtml\Commands\Run;
 use Superb\QA\Controller\Adminhtml\Commands\Log;
+use Superb\QA\Controller\Adminhtml\Commands\Run;
 
-/** @var Commands $block */
+/**
+ * @var Commands $block
+ * @var Escaper  $escaper
+ */
 
 ?>
 <div class="page-main-actions">
     <form method="post"
-          data-mage-init='{"QACommand":{"runUrl":"<?= $block->getUrl(Run::URL); ?>", "logUrl":"<?= $block->getUrl(Log::URL); ?>"}}'>
+          data-mage-init='{"QACommand":{"runUrl":"<?= $block->getUrl(Run::URL) ?>", "logUrl":"<?= $block->getUrl(Log::URL) ?>"}}'>
         <div class="admin__field">
             <div class="admin__field-label">
                 <label for="command">Command:</label>
@@ -26,21 +30,21 @@ use Superb\QA\Controller\Adminhtml\Commands\Log;
                     <optgroup label="Previous used">
                         <?php foreach ($block->getPrevious() as $id => $command): ?>
                             <option
-                                value="<?= $block->escapeHtmlAttr($command); ?>"
-                                data-id="<?= $block->escapeHtmlAttr($id); ?>"><?= $block->escapeHtml($command); ?></option>
+                                value="<?= $escaper->escapeHtmlAttr($command) ?>"
+                                data-id="<?= $escaper->escapeHtmlAttr($id) ?>"><?= $escaper->escapeHtml($command) ?></option>
                         <?php endforeach; ?>
                     </optgroup>
                     <optgroup label="Commands">
                         <?php foreach ($block->getCommands() as $command => $description): ?>
                             <option
-                                value="<?= $block->escapeHtmlAttr($command); ?>"><?= $block->escapeHtml($description); ?></option>
+                                value="<?= $escaper->escapeHtmlAttr($command) ?>"><?= $escaper->escapeHtml($description) ?></option>
                         <?php endforeach; ?>
                     </optgroup>
                     <?php if (count($block->getCustoms())): ?>
                         <optgroup label="Customs">
                             <?php foreach ($block->getCustoms() as $command => $description): ?>
                                 <option
-                                    value="<?= $block->escapeHtmlAttr($command); ?>"><?= $block->escapeHtml($description); ?></option>
+                                    value="<?= $escaper->escapeHtmlAttr($command) ?>"><?= $escaper->escapeHtml($description) ?></option>
                             <?php endforeach; ?>
                         </optgroup>
                     <?php endif; ?>
@@ -64,9 +68,9 @@ use Superb\QA\Controller\Adminhtml\Commands\Log;
                 </div>
             </div>
             <div class="admin__field-control">
-                <button id="run" title="<?= $block->escapeHtmlAttr(__('Run Command')) ?>" type="submit"
+                <button id="run" title="<?= $escaper->escapeHtmlAttr(__('Run Command')) ?>" type="submit"
                         class="action-default scalable save primary ui-button ui-corner-all ui-widget">
-                    <span><?= $block->escapeHtml(__('Run')) ?></span>
+                    <span><?= $escaper->escapeHtml(__('Run')) ?></span>
                 </button>
             </div>
         </div>

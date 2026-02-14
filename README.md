@@ -7,8 +7,8 @@ The module allows QA to:
 - View the Cron task queue
 - Delete, download, and view logs
 
-Built-in mechanism for commands and task crons to filter which commands can be executed.
-Task crons are executed through a new command `bin/magento cron:job:run` based on the N98 functionality.
+Built-in mechanism for commands and task cron to filter which commands can be executed.
+Task cron are executed through a new command `bin/magento cron:job:run` based on the N98 functionality.
 
 - [Installation](#markdown-header-installation)
 - [Configuration](#markdown-header-configuration)

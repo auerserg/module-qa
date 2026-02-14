@@ -25,7 +25,8 @@ class LogFile
 
     public function __construct(
         private readonly Filesystem $filesystem,
-        private readonly WriteFactory $writeFactory
+        private readonly WriteFactory $writeFactory,
+        private $sizeLimit = ''
     )
     {
     }
@@ -34,6 +35,7 @@ class LogFile
      * @param $fileName
      * @return bool
      * @throws LocalizedException
+     * @noinspection PhpUnusedLocalVariableInspection
      */
     public function deleteFile($fileName)
     {
@@ -43,9 +45,9 @@ class LogFile
             }
             $directory = $this->getDirectoryWrite();
             return $directory->delete($directory->getAbsolutePath() . $fileName);
-        } catch (ValidatorException $exception) {
+        } catch (ValidatorException $e) {
             throw new LocalizedException(__('Sorry, but the data is invalid or the file is not uploaded.'));
-        } catch (FileSystemException $exception) {
+        } catch (FileSystemException $e) {
             throw new LocalizedException(__('Sorry, but the data is invalid or the file is not uploaded.'));
         }
     }
@@ -54,6 +56,7 @@ class LogFile
      * @param $fileName
      * @return bool
      * @throws FileSystemException
+     * @noinspection PhpUnusedLocalVariableInspection
      */
     public function isExist(&$fileName)
     {
@@ -112,8 +115,7 @@ class LogFile
      */
     public function stats($fileName)
     {
-        $directory = $this->getDirectoryRead();
-        return $directory->stat($fileName);
+        return $this->getDirectoryRead()->stat($fileName);
     }
 
     /**
@@ -121,7 +123,7 @@ class LogFile
      */
     public function getLimit()
     {
-        $memory_limit = ini_get('memory_limit');
+        $memory_limit = $this->sizeLimit ?? ini_get('memory_limit');
         if (preg_match('/^(\d+)(.)$/', $memory_limit, $matches)) {
             switch ($matches[2]) {
                 case 'G':

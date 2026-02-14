@@ -63,9 +63,7 @@ class CronDataProvider extends DataProvider
      */
     public function prepareMetadata()
     {
-        $metadata = [];
-
-        return $metadata;
+        return [];
     }
 
     /**
@@ -80,14 +78,14 @@ class CronDataProvider extends DataProvider
         } elseif (in_array($filter->getField(), ['created_at', 'scheduled_at', 'executed_at', 'finished_at'])) {
             $filters = $this->request->getParam('filters')[$filter->getField()];
 
-            if ($filter->getConditionType() == 'gteq' && array_key_exists('from', $filters)) {
+            if (array_key_exists('from', $filters) && $filter->getConditionType() === 'gteq') {
                 $fromDate = $filters['from'];
                 $fromDateFormatted = (new DateTime($fromDate))->format('Y-m-d H:i:s');
                 $filter->setValue($fromDateFormatted);
                 $this->searchCriteriaBuilder->addFilter($filter);
             }
 
-            if ($filter->getConditionType() == 'lteq' && array_key_exists('to', $filters)) {
+            if (array_key_exists('to', $filters) && $filter->getConditionType() === 'lteq') {
                 $toDate = $filters['to'];
                 $toDateFormatted = (new DateTime($toDate))->format('Y-m-d H:i:s');
                 $filter->setValue($toDateFormatted);

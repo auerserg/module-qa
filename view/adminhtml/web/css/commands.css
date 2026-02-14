@@ -3,32 +3,33 @@
     flex-flow: column nowrap;
 }
 
-.page-main-actions .admin__field {
+.page-main-actions .admin__field,
+.page-main-actions .admin__action {
+    display: flex;
     margin: 5px;
     flex: 0 1 auto;
-    display: flex;
 }
 
 .page-main-actions .admin__action {
-    margin: 5px;
-    flex: 0 1 auto;
-    display: flex;
     justify-content: flex-end;
 }
 
-.admin__action .admin__field-control, .admin__action .admin__field-messages {
+.admin__action .admin__field-control,
+.admin__action .admin__field-messages,
+.admin__field .admin__field-label,
+.admin__field .admin__field-control {
     margin: 5px;
     padding: 5px;
+}
+
+.admin__action .admin__field-control,
+.admin__action .admin__field-messages {
     flex: 0 1 auto;
 }
 
-.admin__action .admin__field-messages {
-    flex: 1 1 auto;
-}
-
-.admin__field .admin__field-label, .admin__field .admin__field-control {
-    margin: 5px;
-    padding: 5px;
+.admin__action .admin__field-messages,
+.admin__field .admin__field-label,
+.admin__field .admin__field-control {
     flex: 1 1 auto;
 }
 
@@ -40,7 +41,8 @@
     width: 100%;
 }
 
-.admin__action .messages {
+.admin__action .messages,
+.admin__action button {
     height: 55px;
 }
 
@@ -48,21 +50,15 @@
     margin: 0 !important;
 }
 
-.admin__action button {
-    height: 55px;
-}
-
 .response-block pre {
     width: 100%;
     min-height: 300px;
-    font-family: "Courier New", Consolas, monospace;
-    font-size: 14px;
-    line-height: 1.4;
     padding: 10px 12px;
+    font: 14px/1.4 "Courier New", Consolas, monospace;
     border-radius: 4px;
     resize: vertical;
-    overflow-y: hidden;
     overflow-x: auto;
+    overflow-y: hidden;
     white-space: pre;
 }
 

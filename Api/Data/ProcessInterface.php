@@ -10,12 +10,12 @@ namespace Superb\QA\Api\Data;
 interface ProcessInterface
 {
 
-    const UPDATED_AT = 'updated_at';
-    const COMMAND = 'command';
-    const CREATED_AT = 'created_at';
-    const PROCESS_ID = 'process_id';
-    const STATUS = 'status';
-    const PID = 'pid';
+    public const UPDATED_AT = 'updated_at';
+    public const COMMAND = 'command';
+    public const CREATED_AT = 'created_at';
+    public const PROCESS_ID = 'process_id';
+    public const STATUS = 'status';
+    public const PID = 'pid';
 
     /**
      * Get process_id
@@ -26,7 +26,7 @@ interface ProcessInterface
     /**
      * Set process_id
      * @param string $processId
-     * @return \Superb\QA\Process\Api\Data\ProcessInterface
+     * @return ProcessInterface
      */
     public function setProcessId($processId);
 
@@ -39,7 +39,7 @@ interface ProcessInterface
     /**
      * Set pid
      * @param string $pid
-     * @return \Superb\QA\Process\Api\Data\ProcessInterface
+     * @return ProcessInterface
      */
     public function setPid($pid);
 
@@ -52,7 +52,7 @@ interface ProcessInterface
     /**
      * Set status
      * @param string $status
-     * @return \Superb\QA\Process\Api\Data\ProcessInterface
+     * @return ProcessInterface
      */
     public function setStatus($status);
 
@@ -79,6 +79,7 @@ interface ProcessInterface
      * @return string
      */
     public function getLog();
+
     /**
      * Get command cmd
      * @return string
@@ -88,7 +89,7 @@ interface ProcessInterface
     /**
      * Set command
      * @param string $command
-     * @return \Superb\QA\Process\Api\Data\ProcessInterface
+     * @return ProcessInterface
      */
     public function setCommand($command);
 }

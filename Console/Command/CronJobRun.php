@@ -26,12 +26,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 class CronJobRun extends Command
 {
 
-    private const NAME_ARGUMENT = "job";
+    private const NAME_ARGUMENT = 'job';
 
     public function __construct(
         private readonly State $state,
         private readonly ObjectManagerInterface $objectManager,
-        private readonly Cron $cronProvider,
+        private readonly Cron $cronService,
         ?string $name = null
     )
     {
@@ -44,6 +44,7 @@ class CronJobRun extends Command
      * @return int
      * @throws LocalizedException
      * @throws Exception
+     * @noinspection ObjectManagerInspection
      */
     protected function execute(
         InputInterface $input,
@@ -56,14 +57,14 @@ class CronJobRun extends Command
 
         $areaList = $this->objectManager->get(AreaList::class);
         $areaList->getArea(Area::AREA_CRONTAB)->load(Area::PART_CONFIG)->load(Area::PART_TRANSLATE);
-        $output->writeln("Cronjob");
+        $output->writeln('Cronjob');
         $jobCode = $input->getArgument(self::NAME_ARGUMENT);
 
         if (!$jobCode) {
             throw new InvalidArgumentException('Invalid job');
         }
 
-        $jobConfig = $this->cronProvider->getJobConfig($jobCode);
+        $jobConfig = $this->cronService->getJobConfig($jobCode);
 
         if (empty($jobCode) || !isset($jobConfig['instance'])) {
             throw new InvalidArgumentException('No job config found!');
@@ -79,12 +80,12 @@ class CronJobRun extends Command
 
         $output->writeln("Job code: {$jobCode}");
         $output->writeln('Run ' . $jobConfig['instance'] . '::' . $jobConfig['method']);
-        $schedule = $this->cronProvider->createNewSchedule($jobCode);
+        $schedule = $this->cronService->createNewSchedule($jobCode);
         try {
             $model->{$jobConfig['method']}($schedule);
-            $this->cronProvider->updateSchedule($schedule);
+            $this->cronService->updateSchedule($schedule);
         } catch (Exception $e) {
-            $this->cronProvider->updateSchedule($schedule, Schedule::STATUS_ERROR, $e->getMessage());
+            $this->cronService->updateSchedule($schedule, Schedule::STATUS_ERROR, $e->getMessage());
         }
 
         if (isset($e)) {
@@ -104,10 +105,10 @@ class CronJobRun extends Command
      */
     protected function configure(): void
     {
-        $this->setName("cron:job:run");
-        $this->setDescription("Run job");
+        $this->setName('cron:job:run');
+        $this->setDescription('Run job');
         $this->setDefinition([
-            new InputArgument(self::NAME_ARGUMENT, InputArgument::OPTIONAL, "Runs a cronjob by job code")
+            new InputArgument(self::NAME_ARGUMENT, InputArgument::OPTIONAL, 'Runs a cronjob by job code')
         ]);
         parent::configure();
     }

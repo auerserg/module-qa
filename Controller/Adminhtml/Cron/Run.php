@@ -14,7 +14,7 @@ use Magento\Framework\Controller\Result\Json;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\Exception\LocalizedException;
 use Psr\Log\LoggerInterface;
-use Superb\QA\Service\Command;
+use Superb\QA\Service\Commands;
 use Superb\QA\Service\Cron;
 
 class Run implements HttpPostActionInterface
@@ -23,7 +23,7 @@ class Run implements HttpPostActionInterface
     public function __construct(
         private readonly LoggerInterface $logger,
         private readonly Cron $cronProvider,
-        private readonly Command $commandProvider,
+        private readonly Commands $commandsService,
         private readonly JsonFactory $jsonFactory,
         private readonly RequestInterface $request
     )
@@ -35,13 +35,13 @@ class Run implements HttpPostActionInterface
         try {
             $id = (int)$this->request->getParam('command_id');
             if ($id) {
-                $processId = $this->commandProvider->runById($id);
+                $processId = $this->commandsService->runById($id);
             } else {
                 $cron = $this->request->getParam('cron');
-                if (!in_array($cron, $this->cronProvider->getCronJobsList())) {
+                if (!in_array($cron, $this->cronProvider->getCronJobsList(), true)) {
                     throw new LocalizedException(__('Cron job is not found.'));
                 }
-                $processId = $this->commandProvider->run('cron:job:run', $cron);
+                $processId = $this->commandsService->run('cron:job:run', $cron);
             }
             return $this->jsonResponse([
                 'processId' => $processId,
@@ -55,16 +55,14 @@ class Run implements HttpPostActionInterface
         }
     }
 
-
     /**
-     * @param $response
-     * @param $status
+     * @param string|array $response
+     * @param string       $status
      * @return Json
      */
     public function jsonResponse($response = '', $status = 'success')
     {
-        $resultJson = $this->jsonFactory->create();
-        return $resultJson->setData(is_array($response)
+        return $this->jsonFactory->create()->setData(is_array($response)
             ? array_replace($response, ['status' => $status])
             : [
                 'status'  => $status,

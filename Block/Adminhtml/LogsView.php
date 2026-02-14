@@ -63,12 +63,16 @@ class LogsView extends Template
 
     /**
      * @return string
-     * @throws FileSystemException
+     * @noinspection PhpUnusedLocalVariableInspection
      */
     public function getContent()
     {
         $fileName = $this->getRequest()->getParam('filename');
-        return $this->logFile->getContentFile($fileName);
+        try {
+            return $this->logFile->getContentFile($fileName);
+        } catch (FileSystemException $e) {
+            return '';
+        }
     }
 }
 

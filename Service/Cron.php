@@ -19,7 +19,6 @@ use Magento\Framework\Stdlib\DateTime\DateTime;
 use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
 use Superb\QA\Api\Data\ProcessInterface;
 use Superb\QA\Api\ProcessRepositoryInterface;
-use Superb\QA\Model\ProcessRepository;
 
 class Cron
 {
@@ -48,15 +47,14 @@ class Cron
     }
 
     /**
-     * @return array
+     * @return array<string, array>
      */
     public function getCronJobs()
     {
         if (empty($this->jobs)) {
-            $jobs = $this->cronConfig->getJobs();
-            foreach ($jobs as $jobGroup => $groupJobs) {
+            foreach ($this->cronConfig->getJobs() as $jobGroup => $groupJobs) {
                 foreach ($groupJobs as $job) {
-                    if ($this->isAllowed($job['name'])) {
+                    if (isset($job['instance']) && $this->isAllowed($job['name'])) {
                         $job['group'] = $jobGroup;
                         $this->jobs[$job['name']] = $job;
                     }
@@ -68,15 +66,30 @@ class Cron
     }
 
     /**
-     * @param $jobCode
-     * @return mixed|null
+     * @param string $cronJobName
+     * @return bool
+     */
+    private function isAllowed($cronJobName)
+    {
+        if (str_starts_with($cronJobName, '_')) {
+            return false;
+        }
+        foreach ($this->excludes as $exclude) {
+            if (str_starts_with($cronJobName, $exclude)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * @param string $jobCode
+     * @return array|null
      */
     public function getJobConfig($jobCode)
     {
         $jobs = $this->getCronJobs();
-        return isset($jobs[$jobCode])
-            ? $jobs[$jobCode]
-            : null;
+        return $jobs[$jobCode] ?? null;
     }
 
     /**
@@ -94,15 +107,14 @@ class Cron
         $this->searchCriteriaBuilder->addFilters([$filter])->setPageSize($count)->setCurrentPage(1);
 
         $searchCriteria = $this->searchCriteriaBuilder->create();
-        $results = $this->processRepository->getList($searchCriteria);
-
-        return $results->getItems();
+        return $this->processRepository->getList($searchCriteria)->getItems();
     }
 
     /**
      * @param string $jobCode
      * @return Schedule
      * @throws Exception
+     * @noinspection PhpDeprecationInspection
      */
     public function createNewSchedule($jobCode)
     {
@@ -114,16 +126,10 @@ class Cron
     }
 
     /**
-     * Get timestamp used for time related database fields in the cron tables
-     *
-     * Note: The timestamp used will change from Magento 2.1.7 to 2.2.0 and
-     *       these changes are branched by Magento version in this method.
-     *
      * @return int
      */
     protected function getCronTimestamp()
     {
-        /* @var $version string e.g. "2.1.7" */
         $version = $this->productMetadata->getVersion();
 
         if (version_compare($version, '2.2.0') >= 0) {
@@ -139,6 +145,7 @@ class Cron
      * @param string   $message
      * @return Schedule
      * @throws Exception
+     * @noinspection PhpDeprecationInspection
      */
     public function updateSchedule(Schedule $schedule, $status = Schedule::STATUS_SUCCESS, $message = '')
     {
@@ -146,23 +153,4 @@ class Cron
         $schedule->setMessages($message);
         return $schedule->save();
     }
-
-
-    /**
-     * @param string $cronJobName
-     * @return bool
-     */
-    private function isAllowed($cronJobName)
-    {
-        if (strpos($cronJobName, '_') === 0) {
-            return false;
-        }
-        foreach ($this->excludes as $exclude) {
-            if (strpos($cronJobName, $exclude) === 0) {
-                return false;
-            }
-        }
-        return true;
-    }
-
 }

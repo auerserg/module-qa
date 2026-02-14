@@ -38,6 +38,7 @@ class View implements HttpGetActionInterface
      * Execute view action
      *
      * @return ResultInterface
+     * @noinspection PhpUnusedLocalVariableInspection
      */
     public function execute(): ResultInterface
     {

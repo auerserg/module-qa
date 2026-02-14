@@ -1,8 +1,7 @@
 define([
     'jquery',
-    'mage/url',
-    'mage/translate'
-], function ($, urlBuilder, $t) {
+    'mage/url'
+], function ($, urlBuilder) {
     'use strict';
 
     urlBuilder.setBaseUrl(window.BASE_URL);

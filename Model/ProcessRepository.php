@@ -12,9 +12,11 @@ use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
 use Magento\Framework\Api\SearchCriteriaInterface;
 use Magento\Framework\Exception\CouldNotDeleteException;
 use Magento\Framework\Exception\CouldNotSaveException;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Superb\QA\Api\Data\ProcessInterface;
 use Superb\QA\Api\Data\ProcessInterfaceFactory;
+use Superb\QA\Api\Data\ProcessSearchResultsInterface;
 use Superb\QA\Api\Data\ProcessSearchResultsInterfaceFactory;
 use Superb\QA\Api\ProcessRepositoryInterface;
 use Superb\QA\Model\ResourceModel\Process as ResourceProcess;
@@ -32,6 +34,11 @@ class ProcessRepository implements ProcessRepositoryInterface
     {
     }
 
+    /**
+     * @param $command
+     * @return ProcessInterface
+     * @throws CouldNotSaveException
+     */
     public function createNew($command)
     {
         /** @var ProcessInterface $process */
@@ -50,7 +57,9 @@ class ProcessRepository implements ProcessRepositoryInterface
     }
 
     /**
-     * @inheritDoc
+     * @param ProcessInterface $process
+     * @return ProcessInterface
+     * @throws CouldNotSaveException
      */
     public function save(ProcessInterface $process)
     {
@@ -64,7 +73,9 @@ class ProcessRepository implements ProcessRepositoryInterface
     }
 
     /**
-     * @inheritDoc
+     * @param SearchCriteriaInterface $criteria
+     * @return ProcessSearchResultsInterface
+     * @noinspection PhpExpressionResultUnusedInspection
      */
     public function getList(
         SearchCriteriaInterface $criteria
@@ -78,7 +89,6 @@ class ProcessRepository implements ProcessRepositoryInterface
 
         $searchResults = $this->searchResultsFactory->create();
         $searchResults->setSearchCriteria($criteria);
-        // нужно что бы получал список вобратном порядке
 
         $items = [];
         foreach ($collection as $model) {
@@ -91,7 +101,9 @@ class ProcessRepository implements ProcessRepositoryInterface
     }
 
     /**
-     * @inheritDoc
+     * @param $processId
+     * @return bool
+     * @throws LocalizedException
      */
     public function deleteById($processId)
     {
@@ -99,7 +111,9 @@ class ProcessRepository implements ProcessRepositoryInterface
     }
 
     /**
-     * @inheritDoc
+     * @param ProcessInterface $process
+     * @return true
+     * @throws CouldNotDeleteException
      */
     public function delete(ProcessInterface $process)
     {
@@ -115,7 +129,9 @@ class ProcessRepository implements ProcessRepositoryInterface
     }
 
     /**
-     * @inheritDoc
+     * @param $processId
+     * @return ProcessInterface
+     * @throws NoSuchEntityException
      */
     public function get($processId)
     {

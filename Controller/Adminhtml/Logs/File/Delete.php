@@ -9,7 +9,6 @@ namespace Superb\QA\Controller\Adminhtml\Logs\File;
 
 use Magento\Backend\App\Action;
 use Magento\Framework\App\Action\HttpGetActionInterface;
-use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Superb\QA\Controller\Adminhtml\Logs\Index;

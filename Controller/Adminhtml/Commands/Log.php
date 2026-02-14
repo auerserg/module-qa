@@ -15,7 +15,7 @@ use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Psr\Log\LoggerInterface;
-use Superb\QA\Service\Command;
+use Superb\QA\Service\Commands;
 
 class Log implements HttpGetActionInterface
 {
@@ -23,7 +23,7 @@ class Log implements HttpGetActionInterface
 
     public function __construct(
         private readonly LoggerInterface $logger,
-        private readonly Command $commandProvider,
+        private readonly Commands $commandsService,
         private readonly JsonFactory $jsonFactory,
         private readonly RequestInterface $request
     )
@@ -39,12 +39,12 @@ class Log implements HttpGetActionInterface
     {
         try {
             $id = $this->request->getParam('id');
-            $entity = $this->commandProvider->getProcess($id);
+            $entity = $this->commandsService->getProcess($id);
             $pid = (int)$entity->getPid();
             $isRunning = false;
             if ($pid > 0) {
                 $isRunning = posix_kill($pid, 0);
-                $this->commandProvider->updateStatusProcess($entity, $isRunning);
+                $this->commandsService->updateStatusProcess($entity, $isRunning);
                 $message = $isRunning
                     ? __('The command is execute...')
                     : __('This command is complete');
@@ -52,7 +52,7 @@ class Log implements HttpGetActionInterface
                 $message = __('PID process not found');
             }
             $logData = '';
-            if (file_exists($entity->getLog())) {
+            if (is_file($entity->getLog())) {
                 $logData = file_get_contents($entity->getLog());
             }
             return $this->jsonResponse([
@@ -69,14 +69,13 @@ class Log implements HttpGetActionInterface
     }
 
     /**
-     * @param $response
-     * @param $status
+     * @param string|array $response
+     * @param string       $status
      * @return Json
      */
     public function jsonResponse($response = '', $status = 'success')
     {
-        $resultJson = $this->jsonFactory->create();
-        return $resultJson->setData(is_array($response)
+        return $this->jsonFactory->create()->setData(is_array($response)
             ? array_replace($response, ['status' => $status])
             : [
                 'status'  => $status,

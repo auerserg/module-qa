@@ -16,7 +16,6 @@ use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Exception\FileSystemException;
 use Magento\Framework\Filesystem;
 use Magento\Framework\Filesystem\Directory\WriteInterface;
-use Magento\Framework\Filesystem\DriverInterface;
 use Magento\Framework\Filesystem\Io\File;
 use Magento\Framework\View\Element\UiComponent\DataProvider\DataProvider;
 
@@ -31,19 +30,9 @@ class LogFileDataProvider extends DataProvider
     private $fileIO;
 
     /**
-     * @var DriverInterface
-     */
-    private $file;
-
-    /**
      * @var WriteInterface
      */
     private $directory;
-
-    /**
-     * @var Filesystem
-     */
-    private $fileSystem;
 
     /**
      * @param string                $name
@@ -53,13 +42,13 @@ class LogFileDataProvider extends DataProvider
      * @param SearchCriteriaBuilder $searchCriteriaBuilder
      * @param RequestInterface      $request
      * @param FilterBuilder         $filterBuilder
-     * @param DriverInterface       $file
      * @param Filesystem            $filesystem
      * @param File|null             $fileIO
      * @param array                 $meta
      * @param array                 $data
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      * @throws FileSystemException
+     * @noinspection ObjectManagerInspection
      */
     public function __construct(
         string $name,
@@ -69,15 +58,12 @@ class LogFileDataProvider extends DataProvider
         SearchCriteriaBuilder $searchCriteriaBuilder,
         RequestInterface $request,
         FilterBuilder $filterBuilder,
-        DriverInterface $file,
         Filesystem $filesystem,
         File $fileIO = null,
         array $meta = [],
         array $data = []
     )
     {
-        $this->file = $file;
-        $this->fileSystem = $filesystem;
         parent::__construct($name,
             $primaryFieldName,
             $requestFieldName,
@@ -96,8 +82,9 @@ class LogFileDataProvider extends DataProvider
     /**
      * Returns data for grid.
      *
-     * @return array
+     * @return array[]
      * @throws FileSystemException
+     * @noinspection GetSetMethodCorrectnessInspection
      */
     public function getData()
     {
@@ -142,8 +129,7 @@ class LogFileDataProvider extends DataProvider
         foreach ($files as $filePath) {
             $filePath = $this->directory->getAbsolutePath($filePath);
             if ($this->directory->isFile($filePath)) {
-                $fileModificationTime = $this->directory->stat($filePath)['mtime'];
-                $sortedFiles[$filePath] = $fileModificationTime;
+                $sortedFiles[$filePath] = $this->directory->stat($filePath)['mtime'];
             }
         }
         //sort array elements using key value
@@ -155,7 +141,7 @@ class LogFileDataProvider extends DataProvider
     /**
      * Return relative log file path after "var/log"
      *
-     * @param mixed $file
+     * @param array $file
      * @return string
      */
     private function getPathToLogFile($file): string

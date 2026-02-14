@@ -34,6 +34,7 @@ class Download extends Action implements HttpGetActionInterface
      */
     private $localizedFileName;
 
+    /** @noinspection ObjectManagerInspection */
     public function __construct(
         Action\Context $context,
         private readonly FileFactory $fileFactory,
@@ -50,6 +51,7 @@ class Download extends Action implements HttpGetActionInterface
      *
      * @return Redirect|ResponseInterface
      * @throws FileSystemException
+     * @noinspection PhpUnusedLocalVariableInspection
      */
     public function execute()
     {

@@ -10,43 +10,46 @@ namespace Superb\QA\Block\Adminhtml;
 use Exception;
 use Magento\Backend\Block\Template;
 use Magento\Backend\Block\Template\Context;
-use Superb\QA\Service\Command;
+use Superb\QA\Service\Commands as CommandsService;
 
 class Commands extends Template
 {
 
     public function __construct(
         Context $context,
-        private readonly Command $commandProvider,
+        private readonly CommandsService $commandsService,
         array $data = []
     )
     {
         parent::__construct($context, $data);
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function getCommands()
     {
         $data = [];
-        $commands = $this->commandProvider->getCommands();
-        foreach ($commands as $command => $description) {
+        foreach ($this->commandsService->getCommands() as $command => $description) {
             $data[$command] = sprintf('%s (%s)', $command, $description);
         }
         asort($data);
         return $data;
     }
 
+    /**
+     * @return array<string, string>
+     * @noinspection PhpUnusedLocalVariableInspection
+     */
     public function getPrevious()
     {
         $data = [];
         try {
-            $commands = $this->commandProvider->getPrevious();
-            $customCommands = array_flip($this->commandProvider->getCustomCommands());
+            $commands = $this->commandsService->getPrevious();
+            $customCommands = array_flip($this->commandsService->getCustomCommands());
             foreach ($commands as $command) {
                 $description = $command->getCommand();
-                if (isset($customCommands[$description])) {
-                    $description = $customCommands[$description];
-                }
-                $data[$command->getProcessId()] = $description;
+                $data[$command->getProcessId()] = $customCommands[$description] ?? $description;
             }
         } catch (Exception $e) {
             // empty
@@ -54,19 +57,24 @@ class Commands extends Template
         return $data;
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function getCustoms()
     {
         $data = [];
-        $commands = array_keys($this->commandProvider->getCustomCommands());
-        foreach ($commands as $command) {
-            $data[Command::CUSTOM_PREFIX . $command] = $command;
+        foreach (array_keys($this->commandsService->getCustomCommands()) as $command) {
+            $data[CommandsService::CUSTOM_PREFIX . $command] = $command;
         }
         return $data;
     }
 
+    /**
+     * @return bool
+     */
     public function isAllowedCustomCommand()
     {
-        return $this->commandProvider->isAllowedCustomCommand();
+        return $this->commandsService->isAllowedCustomCommand();
     }
 }
 

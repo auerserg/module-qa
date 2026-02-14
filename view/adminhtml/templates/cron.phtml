@@ -4,15 +4,22 @@
  * See COPYING.txt for license details.
  */
 
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Helper\SecureHtmlRenderer;
 use Superb\QA\Block\Adminhtml\Cron;
-use Superb\QA\Controller\Adminhtml\Cron\Run;
 use Superb\QA\Controller\Adminhtml\Commands\Log;
+use Superb\QA\Controller\Adminhtml\Cron\Run;
 
-/** @var Cron $block */
+/**
+ * @var Cron               $block
+ * @var Escaper            $escaper
+ * @var SecureHtmlRenderer $secureRenderer
+ */
 
 ?>
 <div class="page-main-actions">
-    <form method="post" data-mage-init='{"QACommand":{"runUrl":"<?= $block->getUrl(Run::URL); ?>", "logUrl":"<?= $block->getUrl(Log::URL); ?>"}}'>
+    <form method="post"
+          data-mage-init='{"QACommand":{"runUrl":"<?= $block->getUrl(Run::URL) ?>", "logUrl":"<?= $block->getUrl(Log::URL) ?>"}}'>
         <div class="admin__field">
             <div class="admin__field-label">
                 <label for="cron">Cron:</label>
@@ -22,14 +29,14 @@ use Superb\QA\Controller\Adminhtml\Commands\Log;
                     <optgroup label="Previous used">
                         <?php foreach ($block->getPrevious() as $id => $command): ?>
                             <option
-                                value="<?= $block->escapeHtmlAttr($command); ?>"
-                                data-id="<?= $block->escapeHtmlAttr($id); ?>"><?= $block->escapeHtml($command); ?></option>
+                                value="<?= $escaper->escapeHtmlAttr($command) ?>"
+                                data-id="<?= $escaper->escapeHtmlAttr($id) ?>"><?= $escaper->escapeHtml($command) ?></option>
                         <?php endforeach; ?>
                     </optgroup>
                     <optgroup label="Cron Jobs">
                         <?php foreach ($block->getCronJobs() as $name => $description): ?>
                             <option
-                                value="<?= $block->escapeHtmlAttr($name); ?>"><?= $block->escapeHtml($description); ?></option>
+                                value="<?= $escaper->escapeHtmlAttr($name) ?>"><?= $escaper->escapeHtml($description) ?></option>
                         <?php endforeach; ?>
                     </optgroup>
                 </select>
@@ -44,9 +51,9 @@ use Superb\QA\Controller\Adminhtml\Commands\Log;
                 </div>
             </div>
             <div class="admin__field-control">
-                <button id="run" title="<?= $block->escapeHtmlAttr(__('Run Cron')) ?>" type="submit"
+                <button id="run" title="<?= $escaper->escapeHtmlAttr(__('Run Cron')) ?>" type="submit"
                         class="action-default scalable save primary ui-button ui-corner-all ui-widget">
-                    <span><?= $block->escapeHtml(__('Run')) ?></span>
+                    <span><?= $escaper->escapeHtml(__('Run')) ?></span>
                 </button>
             </div>
         </div>

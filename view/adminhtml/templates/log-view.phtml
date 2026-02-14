@@ -4,9 +4,15 @@
  * See COPYING.txt for license details.
  */
 
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Helper\SecureHtmlRenderer;
 use Superb\QA\Block\Adminhtml\LogsView;
 
-/** @var LogsView $block */
+/**
+ * @var LogsView           $block
+ * @var Escaper            $escaper
+ * @var SecureHtmlRenderer $secureRenderer
+ */
 
 ?>
 <div class="page-main-actions">
@@ -14,17 +20,14 @@ use Superb\QA\Block\Adminhtml\LogsView;
     <div class="page-actions" data-ui-id="page-actions-toolbar-content-header">
         <div class="page-actions-inner">
             <div class="page-actions-buttons">
-                <?php foreach ($block->getActions() as $key => $action):
-                    $hookId = 'buttonId' . uniqid();
-                    ?>
-                    <button id="<?= $block->escapeHtmlAttr($key) ?>"
-                            backend-button-widget-hook-id="<?= $hookId ?>"
-                            title="<?= $block->escapeHtmlAttr($action['label']) ?>"
+                <?php foreach ($block->getActions() as $key => $action): ?>
+                    <button id="<?= $escaper->escapeHtmlAttr($key) ?>"
+                            title="<?= $escaper->escapeHtmlAttr($action['label']) ?>"
                             type="button"
-                            class="action-default scalable <?= $block->escapeHtmlAttr($key) ?>"
-                            onclick="setLocation('<?= $action['href']; ?>')"
+                            class="action-default scalable <?= $escaper->escapeHtmlAttr($key) ?>"
+                            onclick="setLocation('<?= $action['href'] ?>')"
                     >
-                        <span><?= $block->escapeHtml($action['label']) ?></span>
+                        <span><?= $escaper->escapeHtml($action['label']) ?></span>
                     </button>
                 <?php endforeach; ?>
             </div>
@@ -36,9 +39,11 @@ $content = $block->getContent();
 ?>
 <div class="log-viewer-container">
     <pre class="line-numbers"><code class="language-log"
-                                    data-length="<?= $block->escapeHtmlAttr(strlen($content)) ?>"><?= $block->escapeHtml($content) ?></code></pre>
+                                    data-length="<?= $escaper->escapeHtmlAttr(strlen($content)) ?>"><?= $escaper->escapeHtml($content) ?></code></pre>
 </div>
-<script type="text/javascript">
+
+<?php
+$content = <<<JS
     require([
         "jquery"
     ], function ($) {
@@ -65,5 +70,6 @@ $content = $block->getContent();
         window.addEventListener('resize', debounce(resizeLogViewer, 100));
         setTimeout(debounce(resizeLogViewer, 100), 300);
     });
-</script>
+JS;
 
+echo $secureRenderer->renderTag('script', [], $content);

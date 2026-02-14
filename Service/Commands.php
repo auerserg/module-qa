@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 namespace Superb\QA\Service;
 
+use Exception;
 use Magento\Framework\Api\FilterBuilder;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Console\Cli;
@@ -14,9 +15,9 @@ use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\LocalizedException;
 use Superb\QA\Api\Data\ProcessInterface;
 use Superb\QA\Api\ProcessRepositoryInterface;
-use Superb\QA\Model\ProcessRepository;
+use Superb\QA\Model\Process;
 
-class Command
+class Commands
 {
     public const CUSTOM_PREFIX = 'custom_';
     private $commands = [];
@@ -42,6 +43,7 @@ class Command
 
     /**
      * @return array
+     * @noinspection OneTimeUseVariablesInspection
      */
     public function getCommands()
     {
@@ -63,11 +65,11 @@ class Command
      */
     private function isAllowed($commandName)
     {
-        if (strpos($commandName, '_') === 0) {
+        if (str_starts_with($commandName, '_')) {
             return false;
         }
         foreach ($this->excludes as $exclude) {
-            if (strpos($commandName, $exclude) === 0) {
+            if (str_starts_with($commandName, $exclude)) {
                 return false;
             }
         }
@@ -89,9 +91,7 @@ class Command
         $this->searchCriteriaBuilder->addFilters([$filter])->setPageSize($count)->setCurrentPage(1);
 
         $searchCriteria = $this->searchCriteriaBuilder->create();
-        $results = $this->processRepository->getList($searchCriteria);
-
-        return $results->getItems();
+        return $this->processRepository->getList($searchCriteria)->getItems();
     }
 
 
@@ -106,6 +106,7 @@ class Command
      * @return int
      * @throws LocalizedException
      * @throws CouldNotSaveException
+     * @throws Exception
      */
     public function run($command, $args)
     {
@@ -117,7 +118,7 @@ class Command
             throw new LocalizedException(__('Command "%1" is not defined.', $args));
         }
         $entity = $this->processRepository->createNew($command);
-        $pid = exec($entity->getCmd());
+        $pid = $this->runInBackground($entity);
         $entity->setPid($pid);
         $entity->setStatus('running');
         $this->processRepository->save($entity);
@@ -129,12 +130,13 @@ class Command
      * @return int
      * @throws LocalizedException
      * @throws CouldNotSaveException
+     * @throws Exception
      */
     public function runCustom($command)
     {
         $command = trim($command);
         $entity = $this->processRepository->createNew($command);
-        $pid = exec($entity->getCmd());
+        $pid = $this->runInBackground($entity);
         $entity->setPid($pid);
         $entity->setStatus('running');
         $this->processRepository->save($entity);
@@ -164,15 +166,13 @@ class Command
      * @return int
      * @throws CouldNotSaveException
      * @throws LocalizedException
+     * @throws Exception
      */
     public function runById(int $id)
     {
         $entity = $this->processRepository->get($id);
         $entity = $this->processRepository->createNew($entity->getCommand());
-        file_put_contents(BP . '/var/log/_CommandProvider.log',
-            "\r\n[" . date('c') . "] 144: " . var_export($entity->getCmd(), true),
-            FILE_APPEND); // @todo remove debug
-        $pid = exec($entity->getCmd());
+        $pid = $this->runInBackground($entity);
         $entity->setPid($pid);
         $entity->setStatus('running');
         $this->processRepository->save($entity);
@@ -193,4 +193,20 @@ class Command
         $this->processRepository->save($entity);
     }
 
+    /**
+     * @param Process $entity
+     * @return int
+     * @throws Exception
+     */
+    public function runInBackground(Process $entity)
+    {
+        $command = $entity->getCmd();
+        exec($command);
+        $pid = (int)file_get_contents($entity->getPidLog());
+        if ($pid > 0) {
+            unlink($entity->getPidLog());
+        }
+
+        return $pid;
+    }
 }
