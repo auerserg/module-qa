@@ -3,9 +3,10 @@
  * Copyright © Auer All rights reserved.
  * See COPYING.txt for license details.
  */
-/** @var \Superb\QA\Block\Adminhtml\LogsView $block */
 
 use Superb\QA\Block\Adminhtml\LogsView;
+
+/** @var LogsView $block */
 
 ?>
 <div class="page-main-actions">
@@ -34,36 +35,9 @@ use Superb\QA\Block\Adminhtml\LogsView;
 $content = $block->getContent();
 ?>
 <div class="log-viewer-container">
-    <pre class="line-numbers"><code class="language-log" data-length="<?= $block->escapeHtmlAttr(strlen($content))?>"><?= $block->escapeHtml($content) ?></code></pre>
+    <pre class="line-numbers"><code class="language-log"
+                                    data-length="<?= $block->escapeHtmlAttr(strlen($content)) ?>"><?= $block->escapeHtml($content) ?></code></pre>
 </div>
-
-<style>
-    .qa_assistant-logs-view .page-wrapper {
-        height: 100vh !important;
-    }
-
-    .log-viewer-container pre {
-        flex: 1;
-        width: 100%;
-        height: 100vh
-        min-height: 300px;
-        max-height: 500px;
-        font-family: "Courier New", Consolas, monospace;
-        font-size: 14px;
-        line-height: 1.4;
-        box-sizing: border-box;
-        padding: 10px 12px;
-        border: 1px solid #333;
-        border-radius: 6px;
-        overflow-y: scroll;
-        overflow-x: auto;
-        white-space: pre;
-    }
-
-    footer.page-footer {
-        display: none;
-    }
-</style>
 <script type="text/javascript">
     require([
         "jquery"

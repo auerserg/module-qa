@@ -8,6 +8,7 @@ declare(strict_types=1);
 namespace Superb\QA\Ui\DataProvider;
 
 use DateTime;
+use Exception;
 use Magento\Framework\Api\Filter;
 use Magento\Framework\Api\FilterBuilder;
 use Magento\Framework\Api\Search\SearchCriteriaBuilder;
@@ -70,7 +71,7 @@ class CronDataProvider extends DataProvider
     /**
      * @param Filter $filter
      * @return void
-     * @throws \Exception
+     * @throws Exception
      */
     public function addFilter(Filter $filter)
     {

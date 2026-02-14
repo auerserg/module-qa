@@ -10,14 +10,14 @@ namespace Superb\QA\Block\Adminhtml;
 use Exception;
 use Magento\Backend\Block\Template;
 use Magento\Backend\Block\Template\Context;
-use Superb\QA\Model\CommandProvider;
+use Superb\QA\Service\Command;
 
 class Commands extends Template
 {
 
     public function __construct(
         Context $context,
-        private readonly CommandProvider $commandProvider,
+        private readonly Command $commandProvider,
         array $data = []
     )
     {
@@ -59,7 +59,7 @@ class Commands extends Template
         $data = [];
         $commands = array_keys($this->commandProvider->getCustomCommands());
         foreach ($commands as $command) {
-            $data[CommandProvider::CUSTOM_PREFIX . $command] = $command;
+            $data[Command::CUSTOM_PREFIX . $command] = $command;
         }
         return $data;
     }

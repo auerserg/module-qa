@@ -5,10 +5,11 @@
  * See COPYING.txt for license details.
  */
 -->
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:App/etc/routes.xsd">
-	<router id="admin">
-		<route id="qa_assistant" frontName="qa_assistant">
-			<module name="Superb_QA" before="Magento_Backend"/>
-		</route>
-	</router>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:App/etc/routes.xsd">
+    <router id="admin">
+        <route id="qa_assistant" frontName="qa_assistant">
+            <module name="Superb_QA" before="Magento_Backend"/>
+        </route>
+    </router>
 </config>

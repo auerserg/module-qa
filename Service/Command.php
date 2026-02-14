@@ -5,7 +5,7 @@
  */
 declare(strict_types=1);
 
-namespace Superb\QA\Model;
+namespace Superb\QA\Service;
 
 use Magento\Framework\Api\FilterBuilder;
 use Magento\Framework\Api\SearchCriteriaBuilder;
@@ -13,14 +13,16 @@ use Magento\Framework\Console\Cli;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\LocalizedException;
 use Superb\QA\Api\Data\ProcessInterface;
+use Superb\QA\Api\ProcessRepositoryInterface;
+use Superb\QA\Model\ProcessRepository;
 
-class CommandProvider
+class Command
 {
     public const CUSTOM_PREFIX = 'custom_';
     private $commands = [];
 
     public function __construct(
-        private readonly ProcessRepository $processRepository,
+        private readonly ProcessRepositoryInterface $processRepository,
         private readonly FilterBuilder $filterBuilder,
         private readonly SearchCriteriaBuilder $searchCriteriaBuilder,
         private $excludes = [],
@@ -115,7 +117,7 @@ class CommandProvider
             throw new LocalizedException(__('Command "%1" is not defined.', $args));
         }
         $entity = $this->processRepository->createNew($command);
-        $pid = $this->runInBackground($entity);
+        $pid = exec($entity->getCmd());
         $entity->setPid($pid);
         $entity->setStatus('running');
         $this->processRepository->save($entity);
@@ -132,7 +134,7 @@ class CommandProvider
     {
         $command = trim($command);
         $entity = $this->processRepository->createNew($command);
-        $pid = $this->runInBackground($entity);
+        $pid = exec($entity->getCmd());
         $entity->setPid($pid);
         $entity->setStatus('running');
         $this->processRepository->save($entity);
@@ -167,7 +169,10 @@ class CommandProvider
     {
         $entity = $this->processRepository->get($id);
         $entity = $this->processRepository->createNew($entity->getCommand());
-        $pid = $this->runInBackground($entity);
+        file_put_contents(BP . '/var/log/_CommandProvider.log',
+            "\r\n[" . date('c') . "] 144: " . var_export($entity->getCmd(), true),
+            FILE_APPEND); // @todo remove debug
+        $pid = exec($entity->getCmd());
         $entity->setPid($pid);
         $entity->setStatus('running');
         $this->processRepository->save($entity);
@@ -188,19 +193,4 @@ class CommandProvider
         $this->processRepository->save($entity);
     }
 
-    /**
-     * @param Process $entity
-     * @return int
-     */
-    public function runInBackground(Process $entity)
-    {
-        $command = $entity->getCmd();
-        exec($command);
-        $pid = (int)file_get_contents($entity->getPidLog());
-        if ($pid > 0) {
-            unlink($entity->getPidLog());
-        }
-
-        return $pid;
-    }
 }

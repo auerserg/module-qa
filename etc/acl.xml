@@ -13,9 +13,7 @@
                 <resource id="Superb_QA::qa_assistant" title="QA Assistant" sortOrder="9999">
                     <resource id="Superb_QA::commands_index" title="Commands" sortOrder="100"/>
                     <resource id="Superb_QA::cron_index" title="Cron" sortOrder="200"/>
-                    <resource id="Superb_QA::cron_schedule" title="Cron Schedule" sortOrder="300">
-                        <resource id="Superb_QA::cron_delete" title="Delete" sortOrder="100"/>
-                    </resource>
+                    <resource id="Superb_QA::cron_schedule" title="Cron Schedule" sortOrder="300"/>
                     <resource id="Superb_QA::logs_index" title="Logs" sortOrder="400">
                         <resource id="Superb_QA::logs_view" title="View" sortOrder="100"/>
                     </resource>

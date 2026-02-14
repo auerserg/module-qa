@@ -5,16 +5,20 @@
  * See COPYING.txt for license details.
  */
 -->
-<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
-	<table name="superb_qa_process" resource="default" engine="innodb" comment="superb_qa_process Table">
-		<column xsi:type="int" name="process_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Entity Id"/>
-		<constraint xsi:type="primary" referenceId="PRIMARY">
-			<column name="process_id"/>
-		</constraint>
-		<column name="pid" nullable="true" xsi:type="int" comment="pid" identity="false"/>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="superb_qa_process" resource="default" engine="innodb" comment="superb_qa_process Table">
+        <column xsi:type="int" name="process_id" padding="10" unsigned="true" nullable="false" identity="true"
+                comment="Entity Id"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="process_id"/>
+        </constraint>
+        <column name="pid" nullable="true" xsi:type="int" comment="pid" identity="false"/>
         <column name="command" nullable="false" xsi:type="text" comment="command"/>
-		<column name="status" nullable="true" xsi:type="varchar" comment="status" length="255"/>
-		<column name="created_at" nullable="false" xsi:type="datetime" comment="created_at" default="CURRENT_TIMESTAMP"/>
-		<column name="updated_at" nullable="false" xsi:type="datetime" comment="updated_at" default="CURRENT_TIMESTAMP" on_update="true"/>
-	</table>
+        <column name="status" nullable="true" xsi:type="varchar" comment="status" length="255"/>
+        <column name="created_at" nullable="false" xsi:type="datetime" comment="created_at"
+                default="CURRENT_TIMESTAMP"/>
+        <column name="updated_at" nullable="false" xsi:type="datetime" comment="updated_at" default="CURRENT_TIMESTAMP"
+                on_update="true"/>
+    </table>
 </schema>

@@ -9,13 +9,11 @@ namespace Superb\QA\Controller\Adminhtml\Logs\File;
 
 use Magento\Backend\App\Action;
 use Magento\Framework\App\Action\HttpGetActionInterface;
-use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\Controller\ResultInterface;
-use Magento\Framework\Exception\FileSystemException;
-use Magento\Framework\Exception\ValidatorException;
-use Magento\Framework\Filesystem;
-use Magento\Framework\Filesystem\Directory\WriteFactory;
+use Magento\Framework\Exception\LocalizedException;
+use Superb\QA\Controller\Adminhtml\Logs\Index;
+use Superb\QA\Service\LogFile;
 
 /**
  * Controller that delete file by name.
@@ -30,8 +28,7 @@ class Delete extends Action implements HttpGetActionInterface
 
     public function __construct(
         Action\Context $context,
-        private readonly Filesystem $filesystem,
-        private readonly WriteFactory $writeFactory
+        private readonly LogFile $logFile,
     )
     {
         parent::__construct($context);
@@ -44,28 +41,14 @@ class Delete extends Action implements HttpGetActionInterface
      */
     public function execute()
     {
-        /** @var Redirect $resultRedirect */
-        $resultRedirect = $this->resultRedirectFactory->create();
-        $resultRedirect->setPath('qa_assistant/logs/index');
         try {
-            if (empty($fileName = $this->getRequest()->getParam('filename'))) {
-                $this->messageManager->addErrorMessage(__('Please provide valid log file name'));
-
-                return $resultRedirect;
-            }
-            $directory = $this->filesystem->getDirectoryWrite(DirectoryList::LOG);
-            try {
-                $directory->delete($directory->getAbsolutePath() . $fileName);
-                $this->messageManager->addSuccessMessage(__('File %1 deleted', $fileName));
-            } catch (ValidatorException $exception) {
-                $this->messageManager->addErrorMessage(__('Sorry, but the data is invalid or the file is not uploaded.'));
-            } catch (FileSystemException $exception) {
-                $this->messageManager->addErrorMessage(__('Sorry, but the data is invalid or the file is not uploaded.'));
-            }
-        } catch (FileSystemException $exception) {
-            $this->messageManager->addErrorMessage(__('There are no export file with such name %1', $fileName));
+            $fileName = $this->getRequest()->getParam('filename');
+            $this->logFile->deleteFile($fileName);
+            $this->messageManager->addSuccessMessage(__('File %1 deleted', $fileName));
+        } catch (LocalizedException $e) {
+            $this->messageManager->addErrorMessage($e->getMessage());
         }
 
-        return $resultRedirect;
+        return $this->resultRedirectFactory->create()->setPath(Index::URL);
     }
 }

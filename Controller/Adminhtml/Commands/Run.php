@@ -15,7 +15,7 @@ use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Psr\Log\LoggerInterface;
-use Superb\QA\Model\CommandProvider;
+use Superb\QA\Service\Command;
 
 class Run implements HttpPostActionInterface
 {
@@ -23,7 +23,7 @@ class Run implements HttpPostActionInterface
 
     public function __construct(
         private readonly LoggerInterface $logger,
-        private readonly CommandProvider $commandProvider,
+        private readonly Command $commandProvider,
         private readonly JsonFactory $jsonFactory,
         private readonly RequestInterface $request
     )
@@ -40,8 +40,8 @@ class Run implements HttpPostActionInterface
             $command = $this->request->getParam('command');
             if ($id) {
                 $processId = $this->commandProvider->runById($id);
-            } elseif (0 === strpos($command, CommandProvider::CUSTOM_PREFIX)) {
-                $command = str_replace(CommandProvider::CUSTOM_PREFIX, '', $command);
+            } elseif (0 === strpos($command, Command::CUSTOM_PREFIX)) {
+                $command = str_replace(Command::CUSTOM_PREFIX, '', $command);
                 $commands = $this->commandProvider->getCustomCommands();
                 if (!isset($commands[$command])) {
                     throw new LocalizedException(__('Command is not allowed.'));

@@ -9,12 +9,11 @@ namespace Superb\QA\Block\Adminhtml;
 
 use Magento\Backend\Block\Template;
 use Magento\Backend\Block\Template\Context;
-use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Exception\FileSystemException;
-use Magento\Framework\Filesystem;
 use Superb\QA\Controller\Adminhtml\Logs\File\Delete;
 use Superb\QA\Controller\Adminhtml\Logs\File\Download;
 use Superb\QA\Controller\Adminhtml\Logs\Index;
+use Superb\QA\Service\LogFile;
 
 class LogsView extends Template
 {
@@ -27,7 +26,7 @@ class LogsView extends Template
      */
     public function __construct(
         Context $context,
-        private readonly Filesystem $filesystem,
+        private readonly LogFile $logFile,
         array $data = []
     )
     {
@@ -68,11 +67,8 @@ class LogsView extends Template
      */
     public function getContent()
     {
-        $directory = $this->filesystem->getDirectoryRead(DirectoryList::LOG);
         $fileName = $this->getRequest()->getParam('filename');
-        $filePath = $directory->getAbsolutePath($fileName);
-        if (!$directory->isFile($fileName)) return '';
-        return $directory->readFile($filePath);
+        return $this->logFile->getContentFile($fileName);
     }
 }
 

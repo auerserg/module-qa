@@ -5,7 +5,8 @@
  * See COPYING.txt for license details.
  */
 -->
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <type name="Magento\Framework\Console\CommandList">
         <arguments>
             <argument name="commands" xsi:type="array">
@@ -15,13 +16,15 @@
     </type>
 
     <preference for="Superb\QA\Api\ProcessRepositoryInterface" type="Superb\QA\Model\ProcessRepository"/>
-	<preference for="Superb\QA\Api\Data\ProcessInterface" type="Superb\QA\Model\Process"/>
-	<preference for="Superb\QA\Api\Data\ProcessSearchResultsInterface" type="Magento\Framework\Api\SearchResults"/>
+    <preference for="Superb\QA\Api\Data\ProcessInterface" type="Superb\QA\Model\Process"/>
+    <preference for="Superb\QA\Api\Data\ProcessSearchResultsInterface" type="Magento\Framework\Api\SearchResults"/>
 
     <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
         <arguments>
             <argument name="collections" xsi:type="array">
-                <item name="cron_schedule_log_data_source" xsi:type="string">Superb\QA\Model\ResourceModel\Schedule\Collection</item>
+                <item name="cron_schedule_log_data_source" xsi:type="string">
+                    Superb\QA\Model\ResourceModel\Schedule\Collection
+                </item>
             </argument>
         </arguments>
     </type>
@@ -48,7 +51,8 @@
                 <item name="braintree:migrate" xsi:type="string">braintree:migrate</item>
                 <item name="cache:disable" xsi:type="string">cache:disable</item>
                 <item name="cache:enable" xsi:type="string">cache:enable</item>
-                <item name="catalog:product:attributes:cleanup" xsi:type="string">catalog:product:attributes:cleanup</item>
+                <item name="catalog:product:attributes:cleanup" xsi:type="string">catalog:product:attributes:cleanup
+                </item>
                 <item name="cms:wysiwyg:restrict" xsi:type="string">cms:wysiwyg:restrict</item>
                 <item name="completion" xsi:type="string">completion</item>
                 <item name="config:sensitive:set" xsi:type="string">config:sensitive:set</item>
@@ -70,7 +74,7 @@
                 <item name="maintenance:disable" xsi:type="string">maintenance:disable</item>
                 <item name="module:disable" xsi:type="string">module:disable</item>
                 <item name="module:enable" xsi:type="string">module:enable</item>
-                <item name="module:uninstall" xsi:type="string"> module:uninstall</item>
+                <item name="module:uninstall" xsi:type="string">module:uninstall</item>
                 <item name="newrelic" xsi:type="string">newrelic</item>
                 <item name="queue" xsi:type="string">queue</item>
                 <item name="remote-storage" xsi:type="string">remote-storage</item>
@@ -89,16 +93,26 @@
                 <item name="captcha_delete_expired_images" xsi:type="string">captcha_delete_expired_images</item>
                 <item name="captcha_delete_old_attempts" xsi:type="string">captcha_delete_old_attempts</item>
                 <item name="expired_tokens_cleanup" xsi:type="string">expired_tokens_cleanup</item>
-                <item name="inventory_in_store_pickup_sales_send_order_notified_emails" xsi:type="string">inventory_in_store_pickup_sales_send_order_notified_emails</item>
-                <item name="magefan_admin_user_guide_xml_update" xsi:type="string">magefan_admin_user_guide_xml_update</item>
+                <item name="inventory_in_store_pickup_sales_send_order_notified_emails" xsi:type="string">
+                    inventory_in_store_pickup_sales_send_order_notified_emails
+                </item>
+                <item name="magefan_admin_user_guide_xml_update" xsi:type="string">magefan_admin_user_guide_xml_update
+                </item>
                 <item name="magento_newrelicreporting_cron" xsi:type="string">magento_newrelicreporting_cron</item>
                 <item name="mf_community_module" xsi:type="string">mf_community_module</item>
                 <item name="newsletter_send_all" xsi:type="string">newsletter_send_all</item>
-                <item name="outdated_authentication_failures_cleanup" xsi:type="string">outdated_authentication_failures_cleanup</item>
+                <item name="outdated_authentication_failures_cleanup" xsi:type="string">
+                    outdated_authentication_failures_cleanup
+                </item>
                 <item name="sales_send_order" xsi:type="string">sales_send_order</item>
-                <item name="security_clean_admin_expired_sessions" xsi:type="string">security_clean_admin_expired_sessions</item>
-                <item name="security_clean_password_reset_request_event_records" xsi:type="string">security_clean_password_reset_request_event_records</item>
-                <item name="security_deactivate_expired_users" xsi:type="string">security_deactivate_expired_users</item>
+                <item name="security_clean_admin_expired_sessions" xsi:type="string">
+                    security_clean_admin_expired_sessions
+                </item>
+                <item name="security_clean_password_reset_request_event_records" xsi:type="string">
+                    security_clean_password_reset_request_event_records
+                </item>
+                <item name="security_deactivate_expired_users" xsi:type="string">security_deactivate_expired_users
+                </item>
                 <item name="system_backup" xsi:type="string">system_backup</item>
                 <item name="visitor_clean" xsi:type="string">visitor_clean</item>
             </argument>

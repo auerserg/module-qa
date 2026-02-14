@@ -10,7 +10,7 @@ namespace Superb\QA\Block\Adminhtml;
 use Exception;
 use Magento\Backend\Block\Template;
 use Magento\Backend\Block\Template\Context;
-use Superb\QA\Model\CronProvider;
+use Superb\QA\Service\Cron;
 
 class Cron extends Template
 {
@@ -23,7 +23,7 @@ class Cron extends Template
      */
     public function __construct(
         Context $context,
-        private readonly CronProvider $cronProvider,
+        private readonly Cron $cronProvider,
         array $data = []
     )
     {

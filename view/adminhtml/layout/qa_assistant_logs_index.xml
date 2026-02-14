@@ -8,9 +8,11 @@
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="admin-1column"
       xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <update handle="formkey"/>
+    <head>
+        <css src="Superb_QA::css/log.css"/>
+    </head>
     <body>
         <referenceContainer name="content">
-            <block name="logs.style" class="Magento\Backend\Block\Template" template="Superb_QA::log-css.phtml"/>
             <uiComponent name="log_grid"/>
         </referenceContainer>
     </body>

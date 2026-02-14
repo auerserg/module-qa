@@ -15,7 +15,7 @@ use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Psr\Log\LoggerInterface;
-use Superb\QA\Model\CommandProvider;
+use Superb\QA\Service\Command;
 
 class Log implements HttpGetActionInterface
 {
@@ -23,7 +23,7 @@ class Log implements HttpGetActionInterface
 
     public function __construct(
         private readonly LoggerInterface $logger,
-        private readonly CommandProvider $commandProvider,
+        private readonly Command $commandProvider,
         private readonly JsonFactory $jsonFactory,
         private readonly RequestInterface $request
     )
@@ -41,7 +41,7 @@ class Log implements HttpGetActionInterface
             $id = $this->request->getParam('id');
             $entity = $this->commandProvider->getProcess($id);
             $pid = (int)$entity->getPid();
-            $isRunning = true;
+            $isRunning = false;
             if ($pid > 0) {
                 $isRunning = posix_kill($pid, 0);
                 $this->commandProvider->updateStatusProcess($entity, $isRunning);
@@ -54,8 +54,6 @@ class Log implements HttpGetActionInterface
             $logData = '';
             if (file_exists($entity->getLog())) {
                 $logData = file_get_contents($entity->getLog());
-            } else {
-                throw new LocalizedException(__('Log file not found'));
             }
             return $this->jsonResponse([
                 'log'       => trim($logData),

@@ -5,14 +5,17 @@
  * See COPYING.txt for license details.
  */
 -->
-<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="admin-1column" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="admin-1column"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <head>
         <script src="Superb_QA::js/prism.js"/>
         <css src="Superb_QA::css/prism.css"/>
+        <css src="Superb_QA::css/log-view.css"/>
     </head>
     <body>
-		<referenceContainer name="content">
-			<block name="logs.view.header" class="Superb\QA\Block\Adminhtml\LogsView" template="Superb_QA::log-view.phtml"/>
-		</referenceContainer>
-	</body>
+        <referenceContainer name="content">
+            <block name="logs.view.header" class="Superb\QA\Block\Adminhtml\LogsView"
+                   template="Superb_QA::log-view.phtml"/>
+        </referenceContainer>
+    </body>
 </page>

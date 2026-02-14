@@ -14,16 +14,16 @@ use Magento\Framework\Controller\Result\Json;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\Exception\LocalizedException;
 use Psr\Log\LoggerInterface;
-use Superb\QA\Model\CommandProvider;
-use Superb\QA\Model\CronProvider;
+use Superb\QA\Service\Command;
+use Superb\QA\Service\Cron;
 
 class Run implements HttpPostActionInterface
 {
     public const URL = 'qa_assistant/cron/run/';
     public function __construct(
         private readonly LoggerInterface $logger,
-        private readonly CronProvider $cronProvider,
-        private readonly CommandProvider $commandProvider,
+        private readonly Cron $cronProvider,
+        private readonly Command $commandProvider,
         private readonly JsonFactory $jsonFactory,
         private readonly RequestInterface $request
     )

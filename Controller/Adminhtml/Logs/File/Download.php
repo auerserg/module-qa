@@ -16,9 +16,9 @@ use Magento\Framework\App\Response\Http\FileFactory;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\Exception\FileSystemException;
-use Magento\Framework\Filesystem;
 use Magento\ImportExport\Model\LocalizedFileName;
-use Throwable;
+use Superb\QA\Controller\Adminhtml\Logs\Index;
+use Superb\QA\Service\LogFile;
 
 class Download extends Action implements HttpGetActionInterface
 {
@@ -37,7 +37,7 @@ class Download extends Action implements HttpGetActionInterface
     public function __construct(
         Action\Context $context,
         private readonly FileFactory $fileFactory,
-        private readonly Filesystem $filesystem,
+        private readonly LogFile $logFile,
         ?LocalizedFileName $localizedFileName = null
     )
     {
@@ -53,43 +53,23 @@ class Download extends Action implements HttpGetActionInterface
      */
     public function execute()
     {
-        $resultRedirect = $this->resultRedirectFactory->create();
-        $resultRedirect->setPath('qa_assistant/logs/index');
-
         $fileName = $this->getRequest()->getParam('filename');
-
-        if (empty($fileName)) {
-            $this->messageManager->addErrorMessage(__('Please provide valid log file name'));
-
-            return $resultRedirect;
-        }
-
-        $logDirectory = $this->filesystem->getDirectoryWrite(DirectoryList::LOG);
-
         try {
-            $fileName = $logDirectory->getDriver()->getRealPathSafety($fileName);
-            $fileExist = $logDirectory->isExist($fileName);
-        } catch (Throwable $e) {
-            $fileExist = false;
-        }
-        if (empty($fileName) || !$fileExist) {
-            $this->messageManager->addErrorMessage(__('Please provide valid log file name'));
-
-            return $resultRedirect;
-        }
-
-        try {
-            $directory = $this->filesystem->getDirectoryRead(DirectoryList::LOG);
-            if ($directory->isFile($fileName)) {
+            if ($this->logFile->isExist($fileName)) {
                 return $this->fileFactory->create($this->localizedFileName->getFileDisplayName($fileName),
-                    ['type' => 'filename', 'value' => $fileName],
+                    [
+                        'type'  => 'filename',
+                        'value' => $fileName
+                    ],
                     DirectoryList::LOG);
             }
             $this->messageManager->addErrorMessage(__('%1 is not a valid file', $fileName));
-        } catch (Exception $exception) {
-            $this->messageManager->addErrorMessage($exception->getMessage());
+        } catch (FileSystemException $e) {
+            $this->messageManager->addErrorMessage(__('Please provide valid log file name'));
+        } catch (Exception $e) {
+            $this->messageManager->addErrorMessage($e->getMessage());
         }
 
-        return $resultRedirect;
+        return $this->resultRedirectFactory->create()->setPath(Index::URL);
     }
 }

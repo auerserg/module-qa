@@ -17,7 +17,7 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\ObjectManager\ConfigLoaderInterface;
 use Magento\Framework\ObjectManagerInterface;
 use RuntimeException;
-use Superb\QA\Model\CronProvider;
+use Superb\QA\Service\Cron;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -31,7 +31,7 @@ class CronJobRun extends Command
     public function __construct(
         private readonly State $state,
         private readonly ObjectManagerInterface $objectManager,
-        private readonly CronProvider $cronProvider,
+        private readonly Cron $cronProvider,
         ?string $name = null
     )
     {

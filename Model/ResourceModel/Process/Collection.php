@@ -8,6 +8,7 @@ declare(strict_types=1);
 namespace Superb\QA\Model\ResourceModel\Process;
 
 use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
+use Superb\QA\Model\ResourceModel\Process;
 
 class Collection extends AbstractCollection
 {
@@ -22,10 +23,8 @@ class Collection extends AbstractCollection
      */
     protected function _construct()
     {
-        $this->_init(
-            \Superb\QA\Model\Process::class,
-            \Superb\QA\Model\ResourceModel\Process::class
-        );
+        $this->_init(\Superb\QA\Model\Process::class,
+            Process::class);
     }
 }
 

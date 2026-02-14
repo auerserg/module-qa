@@ -5,7 +5,7 @@
  */
 declare(strict_types=1);
 
-namespace Superb\QA\Model;
+namespace Superb\QA\Service;
 
 use Exception;
 use Magento\Cron\Model\ConfigInterface;
@@ -18,8 +18,10 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Stdlib\DateTime\DateTime;
 use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
 use Superb\QA\Api\Data\ProcessInterface;
+use Superb\QA\Api\ProcessRepositoryInterface;
+use Superb\QA\Model\ProcessRepository;
 
-class CronProvider
+class Cron
 {
     private $jobs = [];
 
@@ -29,7 +31,7 @@ class CronProvider
         private readonly ProductMetadataInterface $productMetadata,
         private readonly TimezoneInterface $timezone,
         private readonly DateTime $dateTime,
-        private readonly ProcessRepository $processRepository,
+        private readonly ProcessRepositoryInterface $processRepository,
         private readonly FilterBuilder $filterBuilder,
         private readonly SearchCriteriaBuilder $searchCriteriaBuilder,
         private $excludes = [],
@@ -54,7 +56,7 @@ class CronProvider
             $jobs = $this->cronConfig->getJobs();
             foreach ($jobs as $jobGroup => $groupJobs) {
                 foreach ($groupJobs as $job) {
-                    if (isset($job['instance']) && $this->isAllowed($job['name'])) {
+                    if ($this->isAllowed($job['name'])) {
                         $job['group'] = $jobGroup;
                         $this->jobs[$job['name']] = $job;
                     }
@@ -63,23 +65,6 @@ class CronProvider
         }
 
         return $this->jobs;
-    }
-
-    /**
-     * @param string $cronJobName
-     * @return bool
-     */
-    private function isAllowed($cronJobName)
-    {
-        if (strpos($cronJobName, '_') === 0) {
-            return false;
-        }
-        foreach ($this->excludes as $exclude) {
-            if (strpos($cronJobName, $exclude) === 0) {
-                return false;
-            }
-        }
-        return true;
     }
 
     /**
@@ -160,6 +145,24 @@ class CronProvider
         $schedule->setStatus($status)->setFinishedAt(date('Y-m-d H:i:s', $this->getCronTimestamp()));
         $schedule->setMessages($message);
         return $schedule->save();
+    }
+
+
+    /**
+     * @param string $cronJobName
+     * @return bool
+     */
+    private function isAllowed($cronJobName)
+    {
+        if (strpos($cronJobName, '_') === 0) {
+            return false;
+        }
+        foreach ($this->excludes as $exclude) {
+            if (strpos($cronJobName, $exclude) === 0) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }
